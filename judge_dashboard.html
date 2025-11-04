@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Judge Panel | My Tasks</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="judge_dashboard.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <h2 class="logo"><i class="fas fa-gavel"></i> Judge Panel</h2>
+            <nav>
+                <ul>
+                    <li><a href="judge_dashboard.html" class="active" data-section="tasks"><i class="fas fa-star-half-alt"></i> Judging Tasks</a></li>
+                    <li><a href="view_submission.html" data-section="completed"><i class="fas fa-check-circle"></i> Completed Reviews</a></li>
+                    <li><a href="criteria.html" data-section="criteria"><i class="fas fa-scroll"></i> Judging Criteria</a></li>
+                    <li class="logout-link"><a href="login.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="dashboard-header">
+                <h1>My Judging Tasks</h1>
+                <div class="user-profile">
+                    <span class="welcome-text">Welcome,</span>
+                    <span class="user-name" id="judge-name">Judge Alex</span>
+                    <i class="fas fa-user-circle profile-icon"></i>
+                </div>
+            </header>
+
+            <section class="quick-stats-grid" id="stats-grid-container">
+                </section>
+
+            <section class="dashboard-section pending-reviews-section">
+                <h2><i class="fas fa-code-branch"></i> Submissions for Review</h2>
+                <div class="project-list" id="project-list-container">
+                    </div>
+            </section>
+        </main>
+    </div>
+    
+    <script>
+        // --- DYNAMIC DATA SOURCE ---
+        const JUDGE_DATA = {
+            name: "Judge Alex Smith",
+            avg_score: "4.1/5",
+            stats: [
+                { title: "Projects Assigned", value: 20, icon: "fas fa-list-ul", class: "accent-blue-card" },
+                { title: "Pending Reviews", value: 7, icon: "fas fa-hourglass-start", class: "accent-orange-card" },
+                { title: "Reviews Completed", value: 13, icon: "fas fa-check-double", class: "accent-green-card" },
+                { title: "Avg. Score Given", value: "4.1/5", icon: "fas fa-tachometer-alt", class: "accent-purple-card" },
+            ],
+            projects: [
+                // Pending Projects
+                { id: "P001", title: "Innovation & Hackathon Collaboration Platform", team: "Team AlphaDevs", status: "pending", event: "Web Dev Hackathon" },
+                { id: "P002", title: "Eco-Friendly Shopping Assistant App", team: "The Sustainers", status: "pending", event: "AI/ML Challenge" },
+                { id: "P004", title: "Decentralized Voting System", team: "SecureVote", status: "pending", event: "CyberSec CTF" },
+                // Completed Projects
+                { id: "P003", title: "IoT Smart Farm Monitoring System", team: "AgriTech Wizards", status: "completed", event: "IoT Challenge" },
+                { id: "P005", title: "Real-time Language Translator", team: "LinguaTech", status: "completed", event: "AI/ML Challenge" },
+            ]
+        };
+
+        // --- CORE NAVIGATION FUNCTION ---
+        function handleAction(projectId, actionType) {
+            let targetPage = '';
+            
+            if (actionType === 'review') {
+                // Navigate to the Judging Form page (review_form.html) for New Review/Edit
+                targetPage = `view_submission.html?id=${projectId}`;
+            } else if (actionType === 'view') {
+                // Navigate to the Completed Review/View Feedback page (view_submission.html)
+                targetPage = `view_submission.html?id=${projectId}`;
+            }
+            
+            if (targetPage) {
+                // Redirects the user to the correct page with the Project ID
+                window.location.href = targetPage;
+            } else {
+                alert("Navigation Error: Invalid action type.");
+            }
+        }
+
+        // --- RENDER FUNCTIONS ---
+        
+        function renderStats() {
+            const container = document.getElementById('stats-grid-container');
+            let html = '';
+
+            JUDGE_DATA.stats.forEach(stat => {
+                html += `
+                    <div class="stat-card ${stat.class}"> 
+                        <div class="stat-icon"><i class="${stat.icon}"></i></div>
+                        <div class="stat-info">
+                            <h3>${stat.title}</h3>
+                            <p class="stat-value">${stat.value}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function renderProjectList() {
+            const container = document.getElementById('project-list-container');
+            let html = '';
+
+            JUDGE_DATA.projects.forEach(project => {
+                const isCompleted = project.status === 'completed';
+                
+                const itemClass = isCompleted ? 'project-item reviewed-item' : 'project-item';
+                const statusClass = isCompleted ? 'review-status completed' : 'review-status pending';
+                const statusText = isCompleted ? 'Reviewed' : 'Pending';
+                
+                let buttonHtml;
+                if (isCompleted) {
+                    // Completed: Link to View Feedback/Submission details
+                    buttonHtml = `<button class="action-btn view-btn" onclick="handleAction('${project.id}', 'view')"><i class="fas fa-eye"></i> View Feedback</button>`;
+                } else {
+                    // Pending: Link to Review/Rate form
+                    buttonHtml = `<button class="action-btn rate-btn" onclick="handleAction('${project.id}', 'review')"><i class="fas fa-star"></i> Review & Rate</button>`;
+                }
+
+                html += `
+                    <div class="${itemClass}" data-project-id="${project.id}">
+                        <div class="project-info">
+                            <span class="project-id">${project.id} | ${project.event}</span>
+                            <span class="project-title">${project.title}</span>
+                            <span class="team-name">${project.team}</span>
+                        </div>
+                        <span class="${statusClass}">${statusText}</span>
+                        ${buttonHtml}
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        // Initialize Dashboard
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('judge-name').innerText = JUDGE_DATA.name.split(' ')[0];
+            renderStats();
+            renderProjectList();
+        });
+    </script>
+</body>
+</html>
