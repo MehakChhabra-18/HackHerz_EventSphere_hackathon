@@ -1,0 +1,366 @@
+body {
+margin: 0;
+padding: 0;
+font-family: 'Montserrat', sans-serif;
+background-image: url(img/home3.png);
+background-size: cover;
+background-position: top;
+background-repeat: no-repeat;
+background-attachment: fixed;
+color: white;
+}
+#events {
+  display: none; /* hide initially */
+}
+
+/* === Smooth Scrolling === */
+html {
+scroll-behavior: smooth;
+}
+
+/* === Header / Navbar === */
+header {
+top: 0;
+width: 100%;
+padding: 20px 0;
+z-index: 999;
+background-color: rgba(0, 0, 0, 0.1);
+}
+
+nav {
+display: flex;
+justify-content: center;
+align-items: center;
+position: relative;
+}
+
+.nav-links {
+list-style: none;
+display: flex;
+gap: 40px;
+margin: 0;
+padding: 0;
+}
+
+.nav-links li a {
+text-decoration: none;
+color: #fff;
+font-weight: 500;
+font-size: 14px;
+letter-spacing: 1px;
+transition: color 0.3s ease;
+}
+
+.nav-links li a:hover,
+.nav-links li a.active {
+color: #ffcc00;
+border-bottom: 2px solid #ffcc00;
+}
+
+.login-btn {
+position: absolute;
+right: 20px;
+background: #ffcc00;
+color: black;
+border: none;
+border-radius: 5px;
+padding: 6px 12px;
+font-weight: bold;
+cursor: pointer;
+transition: background 0.3s ease;
+}
+.login-btn:hover {
+background: #e6b800;
+}
+
+@media (max-width: 768px) {
+.login-btn {
+position: relative;
+margin-top: 10px;
+}
+}
+
+/* === Hero Section === */
+.dis {
+color: white;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+background-color: rgba(0, 0, 0, 0.1);
+height: 92.5vh;
+width: 100%;
+text-align: center;
+}
+.dis h1 {
+font-weight: lighter;
+font-size: 4rem;
+margin-bottom: 20px;
+}
+.dis p {
+font-size: 1.2rem;
+max-width: 700px;
+}
+
+/* === Scroll Button === */
+.scroll-btn {
+display: inline-flex;
+justify-content: center;
+align-items: center;
+margin-top: 40px;
+padding: 14px 28px;
+background: #ffcc00;
+color: black;
+font-size: 1.2rem;
+font-weight: bold;
+text-decoration: none;
+border-radius: 50px;
+transition: all 0.3s ease;
+box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+animation: bounce 1.5s infinite;
+cursor: pointer;
+}
+.scroll-btn:hover {
+background: #e6b800;
+transform: translateY(4px);
+box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+@keyframes bounce {
+0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+40% { transform: translateY(-10px); }
+60% { transform: translateY(-5px); }
+}
+
+/* === Cards / Events Section === */
+.cards-section {
+padding: 60px 40px 120px;
+background: rgba(0, 0, 0, 0.1);
+text-align: center;
+display: flex;
+justify-content: space-between;
+flex-wrap: wrap;
+}
+.cards-section .title {
+font-size: 3rem;
+margin-bottom: 40px;
+}
+.card-container {
+display: flex;
+gap: 30px;
+justify-content: center;
+flex-wrap: wrap;
+margin-bottom: 40px;
+}
+.card {
+background: rgba(255, 255, 255, 0.05);
+border-radius: 15px;
+overflow: hidden;
+width: 300px;
+backdrop-filter: blur(10px);
+box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card:hover {
+transform: translateY(-10px);
+box-shadow: 0 0 30px rgba(255, 204, 0, 0.6);
+}
+.card img {
+width: 100%;
+height: 200px;
+object-fit: cover;
+}
+.card-content {
+padding: 20px;
+}
+.card-content h2 {
+font-size: 1.5rem;
+margin-bottom: 10px;
+}
+.card-content p {
+font-size: 0.95rem;
+margin-bottom: 15px;
+color: #ddd;
+}
+.card-content .btn {
+display: inline-block;
+padding: 10px 20px;
+background: #ffcc00;
+color: black;
+text-decoration: none;
+font-weight: bold;
+border-radius: 5px;
+transition: background 0.3s ease;
+}
+.card-content .btn:hover {
+background: #e6b800;
+}
+
+/* === Popup === */
+.popup {
+display: none;
+position: fixed;
+inset: 0;
+background: rgba(0,0,0,0.8);
+justify-content: center;
+align-items: center;
+z-index: 1000;
+}
+.popup-box {
+background: rgba(255,255,255,0.08);
+backdrop-filter: blur(15px);
+border-radius: 15px;
+width: 75vw;
+height: 75vh;
+display: flex;
+overflow: hidden;
+position: relative;
+color: white;
+box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+animation: popupFade 0.3s ease;
+}
+
+/* Left Image */
+.popup-left {
+width: 50%;
+height: 100%;
+}
+.popup-left img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+}
+
+/* Right Section (Form + Details) */
+.popup-right {
+  width: 50%;
+  padding: 25px 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 8px; /* reduced gap */
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #ffcc00 transparent;
+}
+
+.popup-right h2 {
+  font-size: 1.8rem;
+  color: #ffcc00;
+  margin-bottom: 5px;
+}
+
+.popup-right p {
+  font-size: 1rem;
+  color: #f0f0f0;
+  margin: 3px 0;
+}
+
+/* Compact form spacing */
+#eventRegisterForm {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  margin-bottom: 5px;
+}
+
+#registerBtn {
+  margin-top: 6px;
+}
+/* Input Fields */
+.input-group {
+display: flex;
+flex-direction: column;
+text-align: left;
+}
+.input-group label {
+color: #ffcc00;
+font-weight: 600;
+margin-bottom: 5px;
+}
+.input-group input,
+.input-group select {
+padding: 10px;
+border: none;
+border-radius: 6px;
+background: rgba(255, 255, 255, 0.1);
+color: white;
+font-size: 0.95rem;
+outline: none;
+transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+.input-group input::placeholder {
+color: #ccc;
+}
+.input-group input:focus,
+.input-group select:focus {
+background: rgba(255, 255, 255, 0.2);
+box-shadow: 0 0 8px rgba(255, 204, 0, 0.5);
+}
+
+/* Register Button */
+#registerBtn {
+background: linear-gradient(135deg, #ffcc00, #ff9900);
+color: black;
+font-weight: bold;
+border: none;
+border-radius: 8px;
+padding: 12px;
+cursor: pointer;
+margin-top: 10px;
+transition: all 0.3s ease;
+}
+#registerBtn:hover {
+background: #e6b800;
+transform: scale(1.05);
+}
+
+/* Message */
+#registerMsg {
+text-align: center;
+font-size: 0.95rem;
+margin-top: 8px;
+}
+
+/* Close Button */
+.close-btn {
+position: absolute;
+top: 15px;
+right: 25px;
+font-size: 28px;
+font-weight: bold;
+color: white;
+cursor: pointer;
+}
+
+/* Animation */
+@keyframes popupFade {
+from {opacity: 0; transform: scale(0.9);}
+to {opacity: 1; transform: scale(1);}
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+.popup-box {
+flex-direction: column;
+width: 90%;
+height: auto;
+}
+.popup-left, .popup-right {
+width: 100%;
+height: auto;
+}
+.popup-right {
+text-align: center;
+align-items: center;
+}
+#registerBtn {
+align-self: center;
+}
+}
