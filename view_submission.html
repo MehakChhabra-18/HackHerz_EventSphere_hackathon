@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="doc-title">Review Submission | Judge Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="judge_dashboard.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* --- Form Styles (Retained) --- */
+        .form-card { background-color: var(--secondary-bg); padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px var(--shadow-soft); border: 1px solid var(--border-color); }
+        .form-group { margin-bottom: 25px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-dark); font-size: 1.1rem; }
+        .form-group input[type="text"], .form-group textarea, .form-group select { width: 100%; padding: 12px; background-color: var(--primary-bg); color: var(--text-main); border: 1px solid var(--border-color); border-radius: 5px; transition: border-color 0.3s; resize: vertical; }
+        .form-group input[type="text"]:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--accent-blue); outline: none; }
+        .criteria-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-top: 20px; }
+        .criterion-item { background-color: var(--primary-bg); padding: 20px; border-radius: 6px; border-left: 3px solid var(--accent-blue); }
+        .criterion-item label { font-size: 1rem; color: var(--text-main); margin-bottom: 15px; }
+        .score-slider-group { display: flex; align-items: center; gap: 15px; margin-top: 10px; }
+        .score-display { font-size: 1.4rem; font-weight: 700; color: var(--accent-green); min-width: 50px; text-align: right; font-family: 'Fira Code', monospace; }
+        .form-actions { display: flex; justify-content: flex-end; gap: 15px; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-color); }
+        .download-btn { background-color: var(--accent-purple); }
+        .download-btn:hover { background-color: #5d36a5; }
+        input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 8px; background: var(--secondary-bg); border-radius: 5px; margin: 0; cursor: pointer; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 18px; width: 18px; border-radius: 50%; background: var(--accent-blue); cursor: pointer; box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); border: 3px solid var(--primary-bg); }
+        input[type=range]::-moz-range-thumb { height: 18px; width: 18px; border-radius: 50%; background: var(--accent-blue); cursor: pointer; box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); border: 3px solid var(--primary-bg); }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        
+        <aside class="sidebar">
+            <h2 class="logo"><i class="fas fa-gavel"></i> Judge Panel</h2>
+            <nav>
+                <ul>
+                    <li><a href="judge_dashboard.html" class="active" data-section="tasks"><i class="fas fa-star-half-alt"></i> Judging Tasks</a></li>
+                    <li><a href="view_submission.html" data-section="completed"><i class="fas fa-check-circle"></i> Complete Reviews</a></li>
+                    <li><a href="criteria.html" data-section="criteria"><i class="fas fa-scroll"></i> Judging Criteria</a></li>
+                    <li class="logout-link"><a href="login.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="dashboard-header">
+                <h1 id="header-title">Review Submission...</h1>
+                <div class="user-profile">
+                    <span class="welcome-text">Team:</span>
+                    <span class="user-name" id="team-info">Loading...</span>
+                    <button class="action-btn" style="margin-left: 10px;" onclick="window.location.href='judge_dashboard.html'"><i class="fas fa-arrow-left"></i> Back to Tasks</button>
+                </div>
+            </header>
+
+            <section class="dashboard-section form-card">
+                <h2><i class="fas fa-clipboard-list"></i> Evaluation Form</h2>
+                
+                <div class="form-group">
+                    <label>Submission Links</label>
+                    <p style="color: var(--accent-blue); font-weight: 600; font-family: 'Fira Code', monospace;">
+                        <i class="fas fa-link"></i> Live Demo: <a id="live-demo-link" href="#" target="_blank" style="color: var(--accent-blue);">Loading...</a>
+                        <span style="margin-left: 20px;"><i class="fab fa-github"></i> Repository: <a id="repo-link" href="#" target="_blank" style="color: var(--accent-blue);">Loading...</a></span>
+                    </p>
+                </div>
+                
+                <h3 id="scoring-header" style="color: var(--text-main); margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">Scoring</h3>
+                <div id="criteria-grid-container" class="criteria-grid">
+                    </div>
+                
+                <div class="form-group" style="margin-top: 40px;">
+                    <label for="feedback">Detailed Feedback & Comments</label>
+                    <textarea id="feedback" rows="6" placeholder="Provide constructive feedback for the team. This will be shared after judging is complete."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="overall">Overall Recommendation Score (1-10)</label>
+                    <input type="range" id="overall" min="1" max="10" value="7" oninput="document.getElementById('overall_display').innerText=this.value;">
+                    <span id="overall_display" class="score-display" style="font-size: 2rem; color: var(--accent-orange); margin-top: 10px;">7</span>
+                </div>
+
+                <div class="form-actions">
+                    <button class="action-btn download-btn" id="download-btn" onclick="downloadProjectArtifacts()"><i class="fas fa-download"></i> **Download Artifacts**</button>
+                    <button class="action-btn" style="background-color: var(--accent-orange);" onclick="saveDraft()"><i class="fas fa-save"></i> **Save Draft**</button>
+                    <button class="action-btn view-btn" onclick="submitReview()"><i class="fas fa-paper-plane"></i> **Submit Final Review**</button>
+                </div>
+                
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // --- DYNAMIC DATA SOURCES ---
+        
+        const ALL_PROJECTS = { 
+            "P001": { id: "P001", title: "Innovation & Collaboration Platform", team: "Team AlphaDevs", event: "Web Dev Hackathon", eventKey: "webdev", demo: "https://live.platform.dev/p001", repo: "/alphadevs-repo" },
+            "P002": { id: "P002", title: "Eco-Friendly Shopping Assistant App", team: "The Sustainers", event: "AI/ML Challenge", eventKey: "aiml", demo: "https://eco-assist.app/p002", repo: "/sustainers-eco" },
+            "P004": { id: "P004", title: "Decentralized Voting System", team: "SecureVote", status: "pending", event: "CyberSec CTF", eventKey: "cybersec", demo: "https://securevote.ctf/p004", repo: "/secure-vote-repo" },
+            "P003": { id: "P003", title: "IoT Smart Farm Monitoring System", team: "AgriTech Wizards", event: "IoT Challenge", eventKey: "webdev", demo: "https://iotfarm.app/p003", repo: "/iot-wizards" },
+            "P005": { id: "P005", title: "Real-time Language Translator", team: "LinguaTech", status: "completed", event: "AI/ML Challenge", eventKey: "aiml", demo: "https://lingua.live/p005", repo: "/lingu-tech" },
+            "P006": { id: "P006", title: "Quantum Cryptography Simulator", team: "Team Qubit", event: "Advanced Computing", eventKey: "cybersec", demo: "https://quantum.sim/p006", repo: "/qubit-repo" },
+        };
+
+        const JUDGE_REVIEWS = { /* This object is for loading saved scores/data */
+            "P003": { overall: 9, feedback: "Excellent execution of the IoT concept...", scores: { 1: 5, 2: 4, 3: 5, 4: 5 } },
+            "P005": { overall: 7, feedback: "Model accuracy is acceptable...", scores: { 1: 7, 2: 3, 3: 4, 4: 5 } },
+        };
+
+        const CRITERIA_DATA = { 
+            'webdev': [{ id: 1, title: 'Technical Implementation', maxScore: 5, color: 'accent-blue' }, { id: 2, title: 'Creativity & Novelty of Idea', maxScore: 5, color: 'accent-purple' }, { id: 3, title: 'User Experience (UX/UI)', maxScore: 5, color: 'accent-orange' }, { id: 4, title: 'Business Potential & Impact', maxScore: 5, color: 'accent-green' }],
+            'aiml': [{ id: 1, title: 'Model Accuracy', maxScore: 10, color: 'accent-purple' }, { id: 2, title: 'Data Handling Efficiency', maxScore: 5, color: 'accent-blue' }, { id: 3, title: 'Deployment & Integration', maxScore: 5, color: 'accent-green' }, { id: 4, title: 'Ethics & Bias', maxScore: 5, color: 'accent-orange' }],
+            'cybersec': [{ id: 1, title: 'Security Architecture', maxScore: 5, color: 'accent-blue' }, { id: 2, title: 'Vulnerability Analysis', maxScore: 5, color: 'accent-purple' }, { id: 3, title: 'Documentation Quality', maxScore: 5, color: 'accent-orange' }, { id: 4, title: 'Scalability', maxScore: 5, color: 'accent-green' }]
+        };
+
+        let currentProjectId = null;
+        
+        // --- LOCAL STORAGE HELPERS ---
+        function getJudgeStatusData() {
+            try {
+                const data = localStorage.getItem('judgeStatus');
+                if (data) return JSON.parse(data);
+                
+                // Fallback initial status: 3 completed (P003, P004, P005), 3 pending (P001, P002, P006)
+                const initialStatus = { completed: ["P003", "P004", "P005"], pending: ["P001", "P002", "P006"] };
+                localStorage.setItem('judgeStatus', JSON.stringify(initialStatus));
+                return initialStatus;
+            } catch (e) {
+                return { completed: ["P003", "P004", "P005"], pending: ["P001", "P002", "P006"] };
+            }
+        }
+
+        /**
+         * Saves the project ID to the specified status list in Local Storage.
+         * @param {string} projectId 
+         * @param {string} status 'completed' or 'pending'
+         */
+        function saveProjectStatus(projectId, status) {
+            const currentData = getJudgeStatusData();
+            
+            // Remove ID from both lists first, in case it's changing status
+            currentData.completed = currentData.completed.filter(id => id !== projectId);
+            currentData.pending = currentData.pending.filter(id => id !== projectId);
+            
+            // Add ID to the correct list
+            if (status === 'completed') {
+                currentData.completed.push(projectId);
+            } else if (status === 'pending') {
+                currentData.pending.push(projectId);
+            }
+            
+            // Save back to Local Storage
+            localStorage.setItem('judgeStatus', JSON.stringify(currentData));
+        }
+
+        // --- CORE DYNAMIC LOGIC & UX ---
+
+        function getProjectIdFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('id');
+        }
+
+        function updateOverallScoreDisplay() {
+            const projectId = getProjectIdFromURL();
+            const project = ALL_PROJECTS[projectId];
+            if (!project) return;
+
+            const criteriaList = CRITERIA_DATA[project.eventKey] || CRITERIA_DATA['webdev'];
+            let currentTotalScore = 0;
+            let maxPossibleScore = 0;
+
+            criteriaList.forEach(criterion => {
+                const scoreElement = document.getElementById(`score-${criterion.id}`);
+                if (scoreElement) {
+                    currentTotalScore += parseInt(scoreElement.value);
+                    maxPossibleScore += criterion.maxScore;
+                }
+            });
+
+            let calculatedOverall = 0;
+            if (maxPossibleScore > 0) {
+                 calculatedOverall = Math.round((currentTotalScore / maxPossibleScore) * 10);
+            }
+            calculatedOverall = Math.max(1, Math.min(10, calculatedOverall));
+
+            const overallSlider = document.getElementById('overall');
+            const overallDisplay = document.getElementById('overall_display');
+
+            if (overallSlider && overallDisplay) {
+                overallSlider.value = calculatedOverall;
+                overallDisplay.innerText = calculatedOverall;
+            }
+        }
+
+        function renderForm(projectId) {
+            const project = ALL_PROJECTS[projectId];
+            // NOTE: Using a hypothetical 'JUDGE_SAVED_DRAFTS' for draft saving in a real app
+            const existingReview = JUDGE_REVIEWS[projectId]; 
+            currentProjectId = projectId;
+
+            if (!project) { 
+                document.getElementById('header-title').innerText = "Project Not Found";
+                document.getElementById('team-info').innerText = "Error";
+                return; 
+            }
+
+            const headerPrefix = existingReview ? 'Edit Review' : 'New Review';
+            document.getElementById('header-title').innerText = `${headerPrefix}: ${project.title}`;
+            document.getElementById('doc-title').innerText = `${headerPrefix} | ${project.title}`;
+            document.getElementById('team-info').innerText = `${project.team} (#${project.id}) - ${project.event}`;
+            
+            // Link Updates
+            document.getElementById('live-demo-link').href = project.demo;
+            document.getElementById('live-demo-link').innerText = project.demo.substring(project.demo.lastIndexOf('/') + 1); // Display only ID for brevity
+            document.getElementById('repo-link').href = `https://github.com${project.repo}`;
+            document.getElementById('repo-link').innerText = project.repo;
+
+            const criteriaList = CRITERIA_DATA[project.eventKey] || CRITERIA_DATA['webdev'];
+            const container = document.getElementById('criteria-grid-container');
+            let html = '';
+
+            criteriaList.forEach((criterion, index) => {
+                const max = criterion.maxScore;
+                const id = `score-${criterion.id}`;
+                const displayId = `display-${criterion.id}`;
+
+                const initialValue = existingReview 
+                    ? existingReview.scores[criterion.id] 
+                    : (Math.ceil(max / 2) || 1); 
+                
+                // Attach updateOverallScoreDisplay() to ALL criterion sliders
+                html += `
+                    <div class="criterion-item" style="border-left-color: var(--${criterion.color});">
+                        <label for="${id}">${index + 1}. ${criterion.title} (Max ${max})</label>
+                        <div class="score-slider-group">
+                            <input type="range" id="${id}" min="1" max="${max}" value="${initialValue}" 
+                                oninput="document.getElementById('${displayId}').innerText=this.value; updateOverallScoreDisplay();">
+                            <span id="${displayId}" class="score-display" style="color: var(--${criterion.color});">${initialValue}</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+            
+            if (existingReview) {
+                document.getElementById('feedback').value = existingReview.feedback;
+            } 
+            
+            updateOverallScoreDisplay(); // Initialize the Overall Score based on criterion scores
+
+            document.querySelector('.form-actions .view-btn').innerHTML = 
+                `<i class="fas fa-paper-plane"></i> ${existingReview ? 'Update Review' : 'Submit Final Review'}`;
+        }
+
+        // --- SUBMISSION LOGIC (CRITICAL FOR STATUS UPDATE) ---
+        function submitReview() {
+            const projectId = currentProjectId;
+            const project = ALL_PROJECTS[projectId];
+            
+            const feedback = document.getElementById('feedback').value;
+            
+            if (!project) {
+                alert("Error: Project details missing.");
+                return;
+            }
+            if (!feedback || feedback.length < 20) {
+                alert("Please complete the form (min 20 characters feedback) before submitting.");
+                return;
+            }
+            
+            // --- STEP 1: Update Status in Local Storage (Moves from pending to completed) ---
+            saveProjectStatus(projectId, 'completed');
+
+            alert(`SUCCESS! Review for ${project.team} (${projectId}) submitted. Redirecting to dashboard...`);
+
+            // --- STEP 2: Redirect back to the Judge Dashboard ---
+            window.location.href = `judge_dashboard.html`;
+        }
+
+        // --- SAVE DRAFT LOGIC ---
+        function saveDraft() {
+            const projectId = currentProjectId;
+            const project = ALL_PROJECTS[projectId];
+            if (!project) {
+                alert("Error: Cannot save draft. Project ID is missing.");
+                return;
+            }
+            alert(`Draft saved successfully for ${project.team}! (This is a simulation)`);
+        }
+
+        // --- DOWNLOAD FUNCTIONALITY ---
+        function downloadProjectArtifacts() { 
+            const projectId = currentProjectId;
+            const project = ALL_PROJECTS[projectId];
+            
+            if (!project) {
+                alert("Error: Cannot download artifacts.");
+                return;
+            }
+            // ... (Download implementation remains the same) ...
+            
+            const overallScore = document.getElementById('overall').value;
+            const feedback = document.getElementById('feedback').value;
+
+            let criteriaScoresSummary = '';
+            const criteriaList = CRITERIA_DATA[project.eventKey] || CRITERIA_DATA['webdev'];
+
+            criteriaList.forEach((criterion, index) => {
+                const scoreElement = document.getElementById(`score-${criterion.id}`);
+                if (scoreElement) {
+                    criteriaScoresSummary += `${index + 1}. ${criterion.title}: ${scoreElement.value} / ${criterion.maxScore}\n`;
+                }
+            });
+            
+            const fileContent = `
+--- JUDGING ARTIFACTS SUMMARY ---
+Project ID: ${project.id}
+Team: ${project.team}
+Event: ${project.event}
+
+Overall Recommendation Score: ${overallScore} / 10
+
+--- CRITERIA SCORES ---
+${criteriaScoresSummary}
+
+--- FEEDBACK ---
+${feedback || 'No detailed feedback provided.'}
+
+---------------------------------
+Downloaded on: ${new Date().toLocaleString()}
+            `;
+            
+            const filename = `Review_Summary_${project.id}.txt`;
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(fileContent));
+            element.setAttribute('download', filename);
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+        
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const projectId = getProjectIdFromURL();
+            
+            if (projectId) {
+                renderForm(projectId);
+            } else {
+                // Default to P001 if ID is missing (For testing)
+                renderForm("P001");
+            }
+        });
+    </script>
+</body>
+</html>
