@@ -9,7 +9,7 @@ Stop wrestling with fragmented tools and mountains of manual coordination. Curre
 
 Event Sphere is the single, centralized web portal that eliminates this administrative burden and unlocks creativity.
 
-💡 Our Unique Value Proposition
+ Our Unique Value Proposition
 We are not a generic project management tool. We are purpose-built for innovation events, offering the only platform with complete end-to-end hackathon management, integrated workspaces, and transparent judging.
 
 Core Impact
