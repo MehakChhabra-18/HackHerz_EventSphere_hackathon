@@ -1,0 +1,277 @@
+/* Import Google Fonts (Montserrat for general, optional Fira Code for data) */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Fira+Code:wght@400;500;600&display=swap');
+
+/* NEW Root Variables based on your provided image */
+:root {
+    --primary-bg: #212529;     /* Deep Dark Grey - Main background */
+    --secondary-bg: #2A3038;   /* Slightly lighter dark grey for cards/sections */
+    --sidebar-bg: #212529;     /* Sidebar same as primary_bg */
+
+    --accent-blue: #0D6EFD;    /* Vibrant Blue - For main actions, active states */
+    --accent-purple: #6F42C1;  /* Deep Purple - For specific highlights */
+    --accent-orange: #FD7E14;  /* Bright Orange - For pending/warning */
+    --accent-green: #198754;   /* Success Green - For completed/positive */
+    
+    --text-main: #E9ECEF;      /* Off-white - General text */
+    --text-light: #ADB5BD;     /* Light grey - Secondary text */
+    --text-dark: #FFFFFF;      /* Pure white - Headings, prominent values */
+
+    --border-color: rgba(255, 255, 255, 0.1); /* Subtle borders */
+    --shadow-soft: rgba(0, 0, 0, 0.2);
+    --shadow-medium: rgba(0, 0, 0, 0.4);
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+    background-color: var(--primary-bg);
+    color: var(--text-main);
+    line-height: 1.6;
+}
+
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* --- Sidebar Styling --- */
+.sidebar {
+    width: 280px;
+    background-color: var(--sidebar-bg);
+    padding: 30px 0;
+    box-shadow: 3px 0 10px var(--shadow-medium);
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--border-color);
+}
+.logo {
+    color: var(--accent-blue);
+    text-align: center;
+    margin-bottom: 50px;
+    font-size: 1.8rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+.logo .fas {
+    font-size: 2rem;
+    color: var(--accent-orange); /* Judge icon distinct color */
+}
+
+/* Navigation Link Styles */
+.sidebar nav ul { list-style: none; padding: 0; margin: 0;}
+.sidebar nav ul li a {
+    display: flex;
+    align-items: center;
+    padding: 18px 30px;
+    color: var(--text-light);
+    text-decoration: none;
+    transition: all 0.3s ease-in-out;
+    border-left: 5px solid transparent;
+}
+.sidebar nav ul li a i { margin-right: 15px; font-size: 1.2rem; width: 25px; text-align: center; }
+.sidebar nav ul li a:hover {
+    background-color: rgba(13, 110, 253, 0.1); /* Blue with opacity */
+    color: var(--accent-blue);
+    border-left-color: var(--accent-blue);
+}
+.sidebar nav ul li a.active {
+    background-color: rgba(13, 110, 253, 0.2); /* More opaque blue */
+    color: var(--accent-blue);
+    border-left-color: var(--accent-blue);
+    font-weight: 600;
+}
+.logout-link { margin-top: auto; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.05); }
+
+/* --- Main Content & Header --- */
+.main-content { flex-grow: 1; padding: 40px; background-color: var(--primary-bg); }
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 50px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+.dashboard-header h1 { font-size: 2.5rem; color: var(--text-dark); font-weight: 700; }
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: var(--secondary-bg);
+    padding: 10px 20px;
+    border-radius: 25px;
+    box-shadow: 0 2px 5px var(--shadow-soft);
+}
+.user-profile .user-name { color: var(--accent-green); font-weight: 600; } /* Judge name in green */
+.user-profile .profile-icon { font-size: 1.8rem; color: var(--text-light); } /* Profile icon in light grey */
+
+/* --- Quick Stats Grid --- */
+.quick-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); /* Slightly smaller cards */
+    gap: 25px; /* Slightly reduced gap */
+    margin-bottom: 60px;
+}
+.stat-card {
+    background-color: var(--secondary-bg);
+    padding: 20px; /* Reduced padding */
+    border-radius: 8px; /* Slightly less rounded corners */
+    display: flex;
+    flex-direction: column; /* Icon on top, text below */
+    align-items: flex-start; /* Align text left */
+    gap: 10px; /* Gap between icon and text */
+    box-shadow: 0 4px 12px var(--shadow-soft);
+    border: 1px solid var(--border-color);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.stat-card:hover { transform: translateY(-5px); box-shadow: 0 6px 15px var(--shadow-medium); }
+
+.stat-icon { /* Replaced .icon-wrapper */
+    font-size: 2.2rem; /* Larger icon */
+    margin-bottom: 10px;
+}
+.stat-card.accent-blue-card .stat-icon { color: var(--accent-blue); }
+.stat-card.accent-orange-card .stat-icon { color: var(--accent-orange); }
+.stat-card.accent-green-card .stat-icon { color: var(--accent-green); }
+.stat-card.accent-purple-card .stat-icon { color: var(--accent-purple); }
+
+
+.stat-card .stat-info h3 { margin: 0; color: var(--text-light); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; }
+.stat-card .stat-info .stat-value {
+    margin: 5px 0 0;
+    font-size: 2.2rem; /* Reduced font size for values */
+    font-weight: 700;
+    color: var(--text-dark);
+    font-family: 'Montserrat', sans-serif; /* Back to Montserrat for values */
+}
+/* No specific color classes needed for stats, colors come from card classes */
+
+/* --- Dashboard Section --- */
+.dashboard-section {
+    background-color: var(--secondary-bg);
+    padding: 30px;
+    border-radius: 8px;
+    margin-bottom: 40px;
+    box-shadow: 0 4px 12px var(--shadow-soft);
+    border: 1px solid var(--border-color);
+}
+.dashboard-section h2 {
+    color: var(--text-dark);
+    font-size: 1.8rem;
+    margin-top: 0;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.dashboard-section h2 .fas { color: var(--accent-blue); font-size: 1.5rem; }
+
+/* --- Project List Styling (Main Judge Area) --- */
+.project-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.project-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--primary-bg); /* Darker BG for list items */
+    padding: 20px 25px;
+    border-radius: 8px;
+    border-left: 4px solid var(--accent-orange); /* Pending border */
+    transition: all 0.3s ease;
+}
+.reviewed-item {
+    border-left-color: var(--accent-green); /* Reviewed border */
+}
+.project-item:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    transform: translateY(-2px);
+}
+.project-info {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+.project-info .project-id {
+    font-family: 'Montserrat', sans-serif; /* Changed back to Montserrat */
+    color: var(--text-light); /* Light grey for ID */
+    font-size: 0.8rem;
+    margin-bottom: 5px;
+}
+.project-info .project-title {
+    color: var(--text-dark);
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+.project-info .team-name {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin-top: 5px;
+}
+.review-status {
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    margin: 0 20px;
+    min-width: 80px;
+    text-align: center;
+}
+.review-status.pending {
+    background-color: rgba(253, 126, 20, 0.2); /* Orange with opacity */
+    color: var(--accent-orange);
+}
+.review-status.completed {
+    background-color: rgba(25, 135, 84, 0.2); /* Green with opacity */
+    color: var(--accent-green);
+}
+
+.action-btn {
+    background-color: var(--accent-blue);
+    color: var(--text-dark); /* White text on blue button */
+    border: none;
+    padding: 10px 18px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+.action-btn:hover {
+    background-color: #0B5ED7; /* Slightly darker blue on hover */
+}
+.view-btn {
+    background-color: var(--accent-green);
+}
+.view-btn:hover {
+    background-color: #157347;
+}
+
+/* --- Media Queries for Responsiveness --- */
+@media (max-width: 768px) {
+    .dashboard-container { flex-direction: column; }
+    .sidebar { width: 100%; height: auto; padding: 20px 0; border-right: none; border-bottom: 1px solid var(--border-color); }
+    .sidebar nav ul { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 20px; }
+    .sidebar nav ul li a { padding: 10px 15px; border-left: none; border-bottom: 3px solid transparent; }
+    .sidebar nav ul li a:hover, .sidebar nav ul li a.active { border-bottom-color: var(--accent-blue); border-left-color: transparent; }
+    .logout-link { margin-top: 20px; border-top: none; width: 100%; text-align: center; }
+    .dashboard-header { flex-direction: column; align-items: flex-start; gap: 15px; margin-bottom: 30px; }
+    .quick-stats-grid { grid-template-columns: 1fr; }
+    
+    /* Project List on small screens */
+    .project-item { flex-direction: column; align-items: flex-start; gap: 15px; }
+    .project-info { width: 100%; }
+    .review-status { margin: 0; order: -1; /* Move status to top */ }
+}
