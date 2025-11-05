@@ -1,0 +1,35 @@
+project:
+  name: "EventSphere"
+  
+  description: 
+    A modern, role-based web application designed to manage the entire lifecycle of an event hackathon or competition. 
+    It facilitates participant registration tracking, project submission handling, judge assignment, and efficient score compilation.
+
+  technologies:
+    core:
+      - HTML5
+      - CSS3
+      - JavaScript 
+    data_management:
+      - JSON Server (for API simulation and user auth)
+      - Local Storage (for dashboard data persistence)
+    version_control:
+      - GitHub
+      
+  features:
+    - role_based_auth: Admin, Judge, and Participant login systems.
+    - submission_tracking: Real-time status display (Submitted, Assigned, In Review, Evaluated).
+    - judge_assignment: Modal interface for assigning and reassigning judges to submissions.
+    - mass_actions: Bulk operations like auto-assignment and mass status updates on submissions page.
+    - dynamic_evaluation: Judge panel with dynamic scoring criteria and overall score calculation.
+
+      
+  authors:
+    - name: "Mehak"
+
+    - name: "Kamya Sharma"
+     - name: "Jannat"
+     
+      
+  repository: "https://github.com/MehakChhabra-18/HackHerz_EventSphere_hackathon"
+  license: "MIT"
