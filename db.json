@@ -1,0 +1,15 @@
+{
+  "registrations": [
+    {
+      "id": "c24a",
+      "firstName": "Jannat",
+      "lastName": ".",
+      "gender": "Female",
+      "email": "participant1@example.com",
+      "phone": "1234567899",
+      "institution": "chitkara university",
+      "event": "INSPIRE TALKS",
+      "time": "11/5/2025, 6:20:34 PM"
+    }
+  ]
+}
