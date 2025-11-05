@@ -1,0 +1,28 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "role": "participant",
+      "email": "participant1@example.com",
+      "password": "12345"
+    },
+    {
+      "id": "2",
+      "role": "judge",
+      "email": "judge1@example.com",
+      "password": "judge123"
+    },
+    {
+      "id": "3",
+      "role": "admin",
+      "email": "admin1@example.com",
+      "password": "admin123"
+    },
+    {
+      "id": "f0c2",
+      "role": "participant",
+      "email": "jannatkataria@02",
+      "password": "earth"
+    }
+  ]
+}
