@@ -34,7 +34,6 @@ if (registerForm) {
 
         try {
             // 1. Check if user already exists
-            // Efficiently query JSON Server: GET /users?email=test@example.com
             const checkRes = await fetch(`${apiURL}?email=${email}`);
             const existingUsers = await checkRes.json();
 
@@ -76,7 +75,6 @@ if (loginForm) {
 
         try {
             // 1. Query JSON Server for a user matching ALL fields (email, password, and role)
-            // If the user is registered AND enters correct credentials, the array size will be 1.
             const res = await fetch(`${apiURL}?email=${email}&password=${password}&role=${role}`);
             const users = await res.json();
 
@@ -87,14 +85,17 @@ if (loginForm) {
                 // Optional: Save logged-in user details to localStorage
                 localStorage.setItem("loggedInUser", JSON.stringify(user)); 
 
-                // 2. Redirect based on role
-                if (role === "participant") {
-                    window.location.href = "participant_dashboard.html";
-                } else if (role === "judge") {
-                    window.location.href = "judge_dashboard.html";
-                } else if (role === "admin") {
-                    window.location.href = "admin_dashboard.html";
-                }
+                // FIX: Use setTimeout for graceful redirection after the alert closes
+                setTimeout(() => {
+                    // 2. Redirect based on role
+                    if (role === "participant") {
+                        window.location.href = "home.html";
+                    } else if (role === "judge") {
+                        window.location.href = "judge_dashboard.html";
+                    } else if (role === "admin") {
+                        window.location.href = "admin_dashboard.html";
+                    }
+                }, 100); 
 
             } else {
                 // Login failed: Incorrect email, password, or role for the registered user

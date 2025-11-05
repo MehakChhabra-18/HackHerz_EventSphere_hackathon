@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Judging Criteria | Judge Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="judge_dashboard.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* --- CRITERIA SPECIFIC STYLES (Retained) --- */
+        .criteria-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .criteria-card { background-color: var(--secondary-bg); padding: 25px; border-radius: 8px; box-shadow: 0 4px 10px var(--shadow-soft); border-top: 5px solid var(--accent-blue); transition: transform 0.3s; }
+        .criteria-card:hover { transform: translateY(-3px); }
+        .criteria-card h3 { color: var(--text-dark); font-size: 1.4rem; margin-top: 0; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        .criteria-card h3 .fas { color: var(--accent-orange); }
+        .criteria-card p { color: var(--text-main); margin-bottom: 15px; font-size: 0.95rem; }
+        .criteria-detail-list { list-style: none; padding-left: 0; margin-top: 15px; }
+        .criteria-detail-list li { position: relative; padding-left: 20px; margin-bottom: 8px; font-size: 0.9rem; color: var(--text-light); }
+        .criteria-detail-list li::before { content: "\f058"; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; left: 0; color: var(--accent-green); }
+        .score-note { background-color: rgba(111, 66, 193, 0.1); padding: 15px; border-radius: 4px; margin-top: 20px; border-left: 3px solid var(--accent-purple); color: var(--text-main); font-size: 0.9rem; }
+        .score-note strong { color: var(--accent-purple); }
+        .card-purple { border-top-color: var(--accent-purple); }
+        .card-orange { border-top-color: var(--accent-orange); }
+        .card-green { border-top-color: var(--accent-green); }
+        .event-selector { background-color: var(--secondary-bg); color: var(--text-main); border: 1px solid var(--border-color); padding: 8px 15px; border-radius: 5px; font-size: 0.9rem; cursor: pointer; transition: border-color 0.3s; }
+        .event-selector:focus { outline: none; border-color: var(--accent-blue); }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        
+        <aside class="sidebar">
+            <h2 class="logo"><i class="fas fa-gavel"></i> Judge Panel</h2>
+            <nav>
+                <ul>
+                    <li><a href="judge_dashboard.html" data-section="tasks"><i class="fas fa-star-half-alt"></i> Judging Tasks</a></li>
+                    <li><a href="view_submission.html" data-section="completed"><i class="fas fa-check-circle"></i> Complete Reviews</a></li>
+                    <li><a href="criteria.html" class="active" data-section="criteria"><i class="fas fa-scroll"></i> Judging Criteria</a></li>
+                    <li class="logout-link"><a href="login.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="dashboard-header">
+                <h1>Event Judging Criteria</h1>
+                <div class="user-profile">
+                    <span class="welcome-text">Select Event:</span>
+                    
+                    <select id="event-select" class="event-selector" onchange="loadCriteria(this.value)">
+                        <option value="webdev" selected>Web Dev Hackathon 2024</option>
+                        <option value="aiml">AI/ML Challenge</option>
+                        <option value="cybersec">CyberSec CTF</option>
+                    </select>
+                    <i class="fas fa-scroll profile-icon"></i>
+                </div>
+            </header>
+
+            <section class="dashboard-section">
+                <h2><i class="fas fa-balance-scale"></i> Core Evaluation Pillars (<span id="total-points">20</span> Points)</h2>
+                
+                <div id="criteria-display" class="criteria-container">
+                    </div>
+                
+                <div class="score-note">
+                    <strong>Scoring Guide:</strong> The default scale is 1 to 5 points per criterion (5 = Excellent, 1 = Poor). Please use the **Overall Recommendation Score** (1-10) for your final subjective ranking.
+                </div>
+
+            </section>
+        </main>
+    </div>
+    
+    <script>
+        const criteriaData = {
+            'webdev': {
+                points: 20,
+                items: [
+                    { icon: 'fas fa-code', title: 'Technical Implementation', points: 5, color: 'card-blue', details: ['Code quality and readability.', 'Use of advanced frameworks.', 'Mobile responsiveness.'] },
+                    { icon: 'fas fa-lightbulb', title: 'Innovation & Creativity', points: 5, color: 'card-purple', details: ['Novelty of the solution.', 'Originality of the concept.'] },
+                    { icon: 'fas fa-palette', title: 'User Experience & Design', points: 5, color: 'card-orange', details: ['Intuitive navigation.', 'Aesthetic appeal.', 'Accessibility compliance.'] },
+                    { icon: 'fas fa-chart-line', title: 'Impact & Viability', points: 5, color: 'card-green', details: ['Market size and business potential.', 'Scalability.', 'Clarity of pitch.'] }
+                ]
+            },
+            'aiml': {
+                points: 25,
+                items: [
+                    { icon: 'fas fa-brain', title: 'Model Accuracy', points: 10, color: 'card-purple', details: ['Accuracy and performance metrics.', 'Data quality and pre-processing.', 'Model choice justification.'] },
+                    { icon: 'fas fa-database', title: 'Data Handling', points: 5, color: 'card-blue', details: ['Efficiency of data pipeline.', 'Handling of edge cases.'] },
+                    { icon: 'fas fa-cogs', title: 'Deployment & Integration', points: 5, color: 'card-green', details: ['Ease of deployment (if applicable).', 'Integration with existing systems.'] },
+                    { icon: 'fas fa-shield-alt', title: 'Ethics & Bias', points: 5, color: 'card-orange', details: ['Consideration of ethical implications.', 'Bias mitigation efforts.'] }
+                ]
+            },
+            'cybersec': {
+                points: 20,
+                items: [
+                    { icon: 'fas fa-lock', title: 'Security Posture', points: 5, color: 'card-green', details: ['Robustness against common exploits.', 'Use of secure coding practices.'] },
+                    { icon: 'fas fa-tools', title: 'Tool Efficiency', points: 5, color: 'card-blue', details: ['Efficiency and speed of the tool/script.', 'Automation level.'] },
+                    { icon: 'fas fa-user-secret', title: 'Complexity of Challenge', points: 5, color: 'card-purple', details: ['Difficulty of the security challenge solved.', 'Elegance of the solution.'] },
+                    { icon: 'fas fa-file-invoice', title: 'Documentation & Report', points: 5, color: 'card-orange', details: ['Clarity of the vulnerability report.', 'Actionable recommendations provided.'] }
+                ]
+            }
+        };
+
+        function loadCriteria(eventKey) {
+            const data = criteriaData[eventKey];
+            const displayContainer = document.getElementById('criteria-display');
+            const totalPointsSpan = document.getElementById('total-points');
+            let htmlContent = '';
+
+            data.items.forEach((item, index) => { // Using index for correct numbering
+                const criteriaNumber = index + 1; // Start numbering from 1
+                const detailsHtml = item.details.map(d => `<li>${d}</li>`).join('');
+                
+                htmlContent += `
+                    <div class="criteria-card ${item.color}">
+                        <h3><i class="${item.icon}"></i> ${criteriaNumber}. ${item.title} (${item.points} Points)</h3>
+                        <p>Evaluate the ${item.title.toLowerCase()} aspects of the submission.</p>
+                        <ul class="criteria-detail-list">
+                            ${detailsHtml}
+                        </ul>
+                    </div>
+                `;
+            });
+
+            // Update content and total points
+            displayContainer.innerHTML = htmlContent;
+            totalPointsSpan.innerText = data.points;
+        }
+
+        // Load the default criteria when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCriteria(document.getElementById('event-select').value);
+        });
+    </script>
+</body>
+</html>

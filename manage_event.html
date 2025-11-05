@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Events | Admin Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /* 1. VS CODE/CYBER BLUE THEME VARIABLES (MATCHING DASHBOARD) */
+        :root {
+            --primary-bg: #0D1117; /* Deep Navy Blue (VS Code/GitHub Dark) */
+            --secondary-bg: #161B22; /* Slightly lighter dark blue for cards */
+            --accent-blue: #58A6FF; /* Vibrant Blue Accent (Main Interactive Color) */
+            --accent-green: #3FB950; /* Success Green Accent */
+            --accent-orange: #F88C52; /* Pending/Warning Orange */
+            --accent-red: #E94E5C; /* Danger Red */
+            --text-light: #C9D1D9; /* Light grey text */
+            --text-dark: #FFFFFF;/* Pure White for Headings/Big Values */
+            --border-color: rgba(255, 255, 255, 0.1);
+            --sidebar-bg: #0D1117; 
+            --shadow-light: rgba(0, 0, 0, 0.3);
+            --shadow-dark: rgba(0, 0, 0, 0.6);
+            --card-shadow: 0 4px 15px var(--shadow-dark);
+
+            /* Mapped vars for Event/Form sections */
+            --primary-color: var(--accent-blue); 
+            --secondary-color: var(--text-dark);
+            --background-color: var(--primary-bg);
+            --main-bg-color: var(--secondary-bg);
+            --primary-bg-input: #21262D; /* Input background/Card background */
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
+        body { background-color: var(--background-color); color: var(--text-light); line-height: 1.6; }
+        a { text-decoration: none; color: inherit; }
+        .dashboard-container { display: flex; min-height: 100vh; }
+
+        /* --- Sidebar Styling (MATCHING DASHBOARD STRUCTURE) --- */
+        .sidebar {
+            width: 280px; /* Wider sidebar */
+            background-color: var(--sidebar-bg);
+            padding: 30px 0;
+            box-shadow: 3px 0 10px var(--shadow-dark);
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border-color);
+            flex-shrink: 0;
+        }
+        .logo {
+            color: var(--accent-blue);
+            text-align: center;
+            margin-bottom: 50px;
+            font-size: 1.8rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .logo i { font-size: 2rem; color: var(--accent-green); margin-right: 0; }
+
+        .sidebar nav ul { list-style: none; padding: 0; margin: 0; }
+        .sidebar nav ul li a {
+            display: flex;
+            align-items: center;
+            padding: 18px 30px; /* Matching padding */
+            color: var(--text-light);
+            text-decoration: none;
+            transition: all 0.3s ease-in-out;
+            border-left: 5px solid transparent;
+        }
+
+        .sidebar nav ul li a i {
+            margin-right: 15px;
+            font-size: 1.2rem;
+            width: 25px; /* Ensures consistent alignment */
+            text-align: center;
+        }
+
+        .sidebar nav ul li a:hover {
+            background-color: rgba(88, 166, 255, 0.1); 
+            color: var(--accent-blue);
+            border-left-color: var(--accent-blue);
+        }
+        .sidebar nav ul li a.active {
+            background-color: rgba(88, 166, 255, 0.2);
+            color: var(--accent-blue);
+            border-left-color: var(--accent-orange); /* Active event link accent */
+            font-weight: 600;
+        }
+        .logout-link { margin-top: auto; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.05); }
+
+        /* --- Main Content Area --- */
+        .main-content { flex-grow: 1; padding: 40px; background-color: var(--primary-bg); }
+        .dashboard-header h1 { 
+            font-size: 2.5rem; 
+            color: var(--text-dark); 
+            font-weight: 700;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        
+        /* 2. Form & Input Styles */
+        .event-form-container { 
+            background-color: var(--main-bg-color); 
+            padding: 30px; 
+            border-radius: 8px; 
+            box-shadow: var(--card-shadow); 
+            margin-bottom: 40px; 
+            border: 1px solid var(--border-color);
+        }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 700; color: var(--text-dark); font-size: 0.95rem; }
+        
+        .form-group input, .form-group textarea, .form-group select { 
+            width: 100%; 
+            padding: 12px; 
+            background-color: var(--primary-bg-input); 
+            border: 1px solid var(--border-color); 
+            border-radius: 4px; 
+            color: var(--secondary-color); 
+            box-sizing: border-box; 
+            transition: border-color 0.3s; 
+        }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus { 
+            border-color: var(--accent-blue); 
+            box-shadow: 0 0 0 2px rgba(88, 166, 255, 0.3);
+            outline: none; 
+        }
+        
+        /* Create Button */
+        .btn-create { 
+            background-color: var(--accent-green); 
+            color: var(--primary-bg); /* Dark text on bright button */
+            padding: 12px 25px; 
+            border: none; 
+            border-radius: 4px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            transition: background-color 0.3s; 
+            box-shadow: 0 4px 6px rgba(63, 185, 80, 0.3);
+        }
+        .btn-create:hover { background-color: #31983f; }
+
+        .date-input { width: 50%; } 
+        
+        /* 3. Table & Action Styles */
+        .dashboard-section { background-color: var(--main-bg-color); padding: 25px; border-radius: 8px; box-shadow: var(--card-shadow); margin-bottom: 30px; border: 1px solid var(--border-color); }
+        .dashboard-section h2 { font-size: 1.8rem; color: var(--text-dark); border-bottom: 2px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px; }
+        .dashboard-section h2 i { color: var(--primary-color); margin-right: 10px; }
+
+
+        .data-table { width: 100%; border-collapse: collapse; }
+        .data-table th, .data-table td { padding: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); text-align: left; color: var(--text-light); }
+        .data-table th { background-color: rgba(88, 166, 255, 0.1); color: var(--accent-blue); font-weight: 600; text-transform: uppercase; font-size: 0.9rem; }
+        .data-table tr:hover { background-color: rgba(88, 166, 255, 0.05); }
+        
+        /* Status Badges */
+        .status-badge { padding: 5px 10px; border-radius: 4px; font-weight: 600; font-size: 0.85em; color: var(--primary-bg); }
+        .status-badge.active { background-color: var(--accent-green); }
+        .status-badge.pending { background-color: var(--accent-orange); } 
+        .status-badge.completed { background-color: var(--accent-red); } 
+
+        .action-btn { background: none; border: none; color: var(--accent-blue); cursor: pointer; padding: 5px 10px; font-size: 0.9em; transition: color 0.2s; }
+        .action-btn:hover:not(:disabled) { color: #4C9AFF; }
+        .action-btn:disabled { color: var(--text-light); opacity: 0.5; cursor: not-allowed; }
+        
+        /* Modal Styles */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.8); }
+        .modal-content { background-color: var(--main-bg-color); margin: 5% auto; padding: 30px; border-radius: 8px; width: 90%; max-width: 700px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.7); }
+        .modal-close { color: var(--text-light); float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
+        .modal-close:hover { color: var(--text-dark); }
+        .modal-content h2 { margin-top: 0; margin-bottom: 20px; color: var(--primary-color); border-bottom: 1px solid var(--border-color); padding-bottom: 10px;}
+        .btn-modal-save { 
+            background-color: var(--accent-green); 
+            color: var(--primary-bg); 
+            padding: 10px 20px; 
+            border-radius: 4px; 
+            border: none; 
+            cursor: pointer; 
+            margin-top: 20px; 
+            font-weight: 700;
+        }
+        .btn-modal-save:hover { background-color: #2F8A39; }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .dashboard-container { flex-direction: column; }
+            .sidebar { 
+                width: 100%; 
+                height: auto; 
+                padding: 20px 0; 
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+            .main-content { padding: 20px; }
+            .date-input { width: 100% !important; }
+            .form-group[style*="flex"] { flex-direction: column; gap: 0 !important; }
+            .modal-content { margin: 15% auto; width: 95%; }
+            
+            /* Mobile Nav Links */
+            .sidebar nav ul {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px 20px;
+            }
+            .sidebar nav ul li a {
+                padding: 10px 15px;
+                border-left: none;
+                border-bottom: 3px solid transparent;
+            }
+            .sidebar nav ul li a.active {
+                border-bottom-color: var(--accent-orange); /* Matching the specific active event color */
+                border-left-color: transparent; 
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="editEventModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" id="closeModalBtn">&times;</span>
+            <h2 id="modalTitle"><i class="fas fa-edit"></i> Edit Event Details</h2>
+            <form id="editEventForm">
+                <input type="hidden" id="editEventId">
+
+                <div class="form-group">
+                    <label for="editEventName">Event Name</label>
+                    <input type="text" id="editEventName" required>
+                </div>
+                <div class="form-group">
+                    <label for="editProblemStatement">Problem Statement / Theme</label>
+                    <textarea id="editProblemStatement" rows="3"></textarea>
+                </div>
+                <div class="form-group" style="display: flex; gap: 20px;">
+                    <div class="date-input">
+                        <label for="editStartDate">Start Date</label>
+                        <input type="date" id="editStartDate" required>
+                    </div>
+                    <div class="date-input">
+                        <label for="editEndDate">End Date</label>
+                        <input type="date" id="editEndDate" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="editJudgingCriteria">Judging Criteria</label>
+                    <input type="text" id="editJudgingCriteria">
+                </div>
+                <button type="submit" class="btn-modal-save"><i class="fas fa-save"></i> Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <h2 class="logo"><i class="fas fa-microchip"></i> EventSphere Admin</h2>
+            <nav>
+                <ul>
+                    <li><a href="overview.html" data-section="overview"><i class="fas fa-columns"></i> Overview</a></li>
+                    <li class="active"><a href="manage_event.html" data-section="manage-events"><i class="fas fa-calendar-alt"></i> **Manage Events**</a></li>
+                    <li><a href="participants.html" data-section="participants"><i class="fas fa-users-cog"></i> Participants</a></li>
+                    <li><a href="manage_judges.html" data-section="judges"><i class="fas fa-user-tie"></i> Manage Judges</a></li>
+                    <li><a href="submissions.html" data-section="submissions"><i class="fas fa-file-code"></i> Submissions</a></li>
+                    <li><a href="analytics.html" data-section="analytics"><i class="fas fa-chart-line"></i> Analytics</a></li>
+                    <li><a href="settings.html" data-section="settings"><i class="fas fa-cogs"></i> Settings</a></li>
+                    <li class="logout-link"><a href="login.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <main class="main-content">
+            <header class="dashboard-header">
+                <h1>Manage Events</h1>
+            </header>
+
+            <section class="event-form-container">
+                <h2><i class="fas fa-plus-circle"></i> Create New Event</h2>
+                <form id="createEventForm">
+                    <div class="form-group">
+                        <label for="eventName">Event Name</label>
+                        <input type="text" id="eventName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="problemStatement">Problem Statement / Theme</label>
+                        <textarea id="problemStatement" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group" style="display: flex; gap: 20px;">
+                        <div class="date-input">
+                            <label for="startDate">Start Date</label>
+                            <input type="date" id="startDate" required>
+                        </div>
+                        <div class="date-input">
+                            <label for="endDate">End Date</label>
+                            <input type="date" id="endDate" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="judgingCriteria">Judging Criteria (e.g., Innovation, Code Quality, UI/UX)</label>
+                        <input type="text" id="judgingCriteria" placeholder="Comma separated values">
+                    </div>
+                    <button type="submit" class="btn-create"><i class="fas fa-save"></i> Save Event</button>
+                </form>
+            </section>
+
+            <section class="dashboard-section">
+                <h2><i class="fas fa-list-alt"></i> Existing Events</h2>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Dates</th>
+                                <th>Participants</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="eventsTableBody">
+                            </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Note: The current date is fixed for reliable status testing: Nov 5, 2025
+        const today = new Date('2025-11-05T00:00:00'); 
+        
+        // Local Storage Key
+        const localStorageKey = 'adminEventsData'; 
+        const participantStorageKey = 'adminParticipantsData'; // Key for participant data
+        
+        // --- DATA MANAGEMENT & INITIAL LOAD ---
+        
+        let eventsData = [];
+
+        // Utility to generate unique ID
+        function generateId() {
+            return '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        // --- DUMMY PARTICIPANT DATA INITIALIZATION (Added/Updated) ---
+        function initializeParticipantData() {
+            const storedParticipants = localStorage.getItem(participantStorageKey);
+            if (!storedParticipants) {
+                const initialParticipants = [
+                    // Participants for Completed Event (Web Dev Innovation Sprint: Nov 3-4)
+                    { id: 'P001', event: 'Web Dev Innovation Sprint' },
+                    { id: 'P002', event: 'Web Dev Innovation Sprint' },
+                    
+                    // Participant for Active Event (Design Challenge Live: Nov 5)
+                    { id: 'P003', event: 'Design Challenge Live' },
+                    
+                    // Participant for Upcoming Event (AI for Social Good: Dec 12-15)
+                    { id: 'P004', event: 'AI for Social Good' },
+                    
+                    // Participants for custom events added in the table for testing:
+                    { id: 'P005', event: 'Unstop Hackathon' },
+                    { id: 'P006', event: 'Hackathon' },
+                    { id: 'P007', event: 'Upcoming Conference' },
+                ];
+                localStorage.setItem(participantStorageKey, JSON.stringify(initialParticipants));
+            }
+        }
+
+        function loadEvents() {
+            initializeParticipantData(); // Initialize participants first
+
+            const storedData = localStorage.getItem(localStorageKey);
+            if (storedData) {
+                eventsData = JSON.parse(storedData);
+            } else {
+                // Default data: Includes Completed, Active, and Upcoming Events
+                eventsData = [
+                    // Completed Event (ends before Nov 5)
+                    { id: 'E101', name: "Web Dev Innovation Sprint", startDate: "2025-11-03", endDate: "2025-11-04", participants: 0, statement: "Build a responsive web application.", criteria: "Innovation, Code Quality" }, 
+                    
+                    // Upcoming Event (starts after Nov 5)
+                    { id: 'E102', name: "AI for Social Good", startDate: "2025-12-12", endDate: "2025-12-15", participants: 0, statement: "Develop an AI solution to address a social issue.", criteria: "Impact, Accuracy" },
+                    
+                    // Active Event (happening on Nov 5)
+                    { id: 'E103', name: "Design Challenge Live", startDate: "2025-11-05", endDate: "2025-11-05", participants: 0, statement: "Design a mobile app interface under time constraints.", criteria: "UX/UI, Creativity" },
+                    
+                    // Upcoming Event (starts after Nov 5)
+                    { id: 'E104', name: "Unstop Hackathon", startDate: "2025-11-12", endDate: "2025-11-15", participants: 0, statement: "Solve an open data problem.", criteria: "Scalability, Impact" },
+                    
+                    // Upcoming Event (starts after Nov 5)
+                    { id: 'E105', name: "Hackathon", startDate: "2025-11-07", endDate: "2025-11-09", participants: 0, statement: "Quick coding challenge.", criteria: "Speed, Code Quality" },
+
+                    // Far Upcoming Event (starts after Nov 5)
+                    { id: 'E106', name: "Upcoming Conference", startDate: "2026-03-01", endDate: "2026-03-05", participants: 0, statement: "Keynote presentation challenge.", criteria: "Keynote Quality" }, 
+                ];
+                saveEvents();
+            }
+            updateParticipantCounts(); // Update counts immediately after loading events
+        }
+        
+        function saveEvents() {
+            localStorage.setItem(localStorageKey, JSON.stringify(eventsData));
+        }
+
+        /**
+         * Counts participants for each event from the participantStorageKey.
+         */
+        function updateParticipantCounts() {
+            const storedParticipants = localStorage.getItem(participantStorageKey);
+            let participants = [];
+            if (storedParticipants) {
+                participants = JSON.parse(storedParticipants);
+            }
+
+            // Create a map to store the count for each event name
+            const counts = participants.reduce((acc, p) => {
+                // Assuming participant data has an 'event' property that matches the event name
+                acc[p.event] = (acc[p.event] || 0) + 1;
+                return acc;
+            }, {});
+
+            // Update the count in the eventsData array
+            eventsData = eventsData.map(event => {
+                event.participants = counts[event.name] || 0;
+                return event;
+            });
+        }
+        
+        // --- RENDERING & STATUS FUNCTIONS ---
+
+        /**
+         * Determines the status of the event based on its dates relative to today.
+         */
+        function getEventStatus(startDateString, endDateString) {
+            const start = new Date(startDateString + 'T00:00:00');
+            const end = new Date(endDateString + 'T23:59:59'); 
+
+            let status = "";
+            let className = "";
+            
+            if (end < today) {
+                status = "Completed";
+                className = "completed";
+            } else if (start <= today && end >= today) {
+                status = "Active";
+                className = "active";
+            } else {
+                status = "Upcoming";
+                className = "pending";
+            }
+            return { status, className };
+        }
+
+        /**
+         * Converts a date string (YYYY-MM-DD) into a short display format (dd Mon).
+         */
+        function formatDate(dateString) {
+            const options = { day: '2-digit', month: 'short' };
+            const date = new Date(dateString + 'T00:00:00'); 
+            return date.toLocaleDateString('en-GB', options).replace(/ /g, ' ');
+        }
+
+        /**
+         * Renders a single event row into the table.
+         */
+        function renderEventRow(event) {
+            const tableBody = document.getElementById('eventsTableBody');
+            const { status, className } = getEventStatus(event.startDate, event.endDate);
+            const formattedStartDate = formatDate(event.startDate);
+            const formattedEndDate = formatDate(event.endDate);
+            const datesString = `${formattedStartDate} - ${formattedEndDate}`;
+            
+            const isCompleted = status === 'Completed';
+            const disabledAttr = isCompleted ? 'disabled' : '';
+
+            const newRow = tableBody.insertRow();
+            
+            newRow.innerHTML = `
+                <td>${event.name}</td>
+                <td>${datesString}</td>
+                <td>${event.participants}</td>
+                <td><span class="status-badge ${className}">${status}</span></td>
+                <td>
+                    <button class="action-btn edit-btn" ${disabledAttr} data-event-id="${event.id}">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <button class="action-btn delete-btn" data-event-id="${event.id}"><i class="fas fa-trash"></i> Delete</button>
+                </td>
+            `;
+        }
+
+        /**
+         * Clears the table and re-renders all events from the eventsData array.
+         */
+        function renderAllEvents() {
+            const tableBody = document.getElementById('eventsTableBody');
+            tableBody.innerHTML = ''; 
+            
+            eventsData.forEach(event => renderEventRow(event));
+
+            // Attach dynamic click handlers after rendering
+            attachActionHandlers();
+        }
+        
+        // --- MODAL LOGIC (EDIT) ---
+        const modal = document.getElementById('editEventModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const editForm = document.getElementById('editEventForm');
+
+        closeModalBtn.onclick = () => { modal.style.display = "none"; };
+        window.onclick = (event) => {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        };
+
+        /** Opens the modal and pre-fills form fields for editing. */
+        function openEditModal(event) {
+            document.getElementById('modalTitle').innerHTML = `<i class="fas fa-edit"></i> Edit Event: ${event.name}`;
+            
+            // Pre-fill fields
+            document.getElementById('editEventId').value = event.id;
+            document.getElementById('editEventName').value = event.name;
+            document.getElementById('editProblemStatement').value = event.statement || '';
+            document.getElementById('editStartDate').value = event.startDate;
+            document.getElementById('editEndDate').value = event.endDate;
+            document.getElementById('editJudgingCriteria').value = event.criteria || '';
+
+            modal.style.display = "block";
+        }
+        
+        /** Handles the update submission from the modal form. */
+        editForm.onsubmit = function(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('editEventId').value;
+            const newName = document.getElementById('editEventName').value;
+            const newStart = document.getElementById('editStartDate').value;
+            const newEnd = document.getElementById('editEndDate').value;
+            const newStatement = document.getElementById('editProblemStatement').value;
+            const newCriteria = document.getElementById('editJudgingCriteria').value;
+
+            // Basic Validation
+            if (new Date(newStart) > new Date(newEnd)) {
+                alert("Error: Start Date cannot be after End Date.");
+                return;
+            }
+
+            // Find event and update (UPDATE LOGIC)
+            const index = eventsData.findIndex(e => e.id === id);
+            if (index !== -1) {
+                eventsData[index] = {
+                    ...eventsData[index], // Keep old data (like participants count)
+                    name: newName,
+                    startDate: newStart,
+                    endDate: newEnd,
+                    statement: newStatement,
+                    criteria: newCriteria
+                };
+
+                saveEvents();
+                renderAllEvents();
+                modal.style.display = "none";
+                alert(`Event "${newName}" updated successfully!`);
+            }
+        };
+        
+        // --- ACTION HANDLERS ---
+
+        /**
+         * Attaches edit and delete handlers.
+         */
+        function attachActionHandlers() {
+            // Edit Handler: Opens the modal
+            document.querySelectorAll('.edit-btn:not(:disabled)').forEach(button => {
+                button.addEventListener('click', function() {
+                    const eventId = this.getAttribute('data-event-id');
+                    const eventToEdit = eventsData.find(e => e.id === eventId);
+                    if (eventToEdit) {
+                        openEditModal(eventToEdit);
+                    }
+                });
+            });
+            
+            // Delete Handler: Triggers deletion
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const eventId = this.getAttribute('data-event-id');
+                    const eventName = eventsData.find(e => e.id === eventId)?.name;
+                    handleDelete(eventId, eventName);
+                });
+            });
+        }
+        
+        /**
+         * Handles the deletion of an event. (DELETE LOGIC)
+         */
+        function handleDelete(eventId, eventName) {
+            if (confirm(`Are you sure you want to delete the event: "${eventName}"? This cannot be undone and will detach participants.`)) {
+                
+                // Filter out the event to be deleted using the ID
+                eventsData = eventsData.filter(event => event.id !== eventId);
+                
+                saveEvents(); // Save updated list
+                renderAllEvents(); // Re-render table
+                alert(`Event "${eventName}" deleted.`);
+            }
+        }
+
+
+        // --- FORM SUBMISSION HANDLER (Create New Event) ---
+        document.getElementById('createEventForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const inputStartDate = document.getElementById('startDate').value;
+            const inputEndDate = document.getElementById('endDate').value;
+            const eventName = document.getElementById('eventName').value;
+            const statement = document.getElementById('problemStatement').value;
+            const criteria = document.getElementById('judgingCriteria').value;
+            
+            if (!inputStartDate || !inputEndDate) {
+                alert("Please select both Start and End Dates.");
+                return;
+            }
+
+            if (new Date(inputStartDate) > new Date(inputEndDate)) {
+                alert("Error: Start Date cannot be after End Date.");
+                return;
+            }
+
+            const newEvent = {
+                id: generateId(), 
+                name: eventName,
+                startDate: inputStartDate, 
+                endDate: inputEndDate,
+                participants: 0,
+                statement: statement,
+                criteria: criteria
+            };
+
+            eventsData.push(newEvent);
+
+            saveEvents(); 
+            renderAllEvents(); 
+
+            this.reset();
+            alert(`Event "${eventName}" scheduled successfully!`);
+        });
+
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            loadEvents(); // Load data and update counts
+            renderAllEvents(); 
+        });
+    </script>
+</body>
+</html>

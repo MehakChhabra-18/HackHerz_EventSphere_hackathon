@@ -1,0 +1,364 @@
+/* Import Google Fonts for Code Theme */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Fira+Code:wght@400;500;600&display=swap');
+
+/* UPDATED Root Variables for Code/Blueish Theme */
+:root {
+    --primary-bg: #0D1117;     /* Deep Navy Blue (VS Code/GitHub Dark) */
+    --secondary-bg: #161B22;   /* Slightly lighter dark blue for cards */
+    --accent-blue: #58A6FF;    /* Vibrant Blue Accent (Main Interactive Color) */
+    --accent-green: #3FB950;   /* Success Green Accent */
+    --accent-orange: #F88C52;  /* Pending/Warning Orange */
+    --text-light: #C9D1D9;     /* Light grey text */
+    --text-dark: #FFFFFF;      /* Pure White for Headings/Big Values */
+    --border-color: rgba(255, 255, 255, 0.1);
+    --sidebar-bg: #0D1117;     
+    --shadow-light: rgba(0, 0, 0, 0.3);
+    --shadow-dark: rgba(0, 0, 0, 0.6);
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+    background-color: var(--primary-bg);
+    color: var(--text-light);
+    line-height: 1.6;
+}
+
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* --- Sidebar Styling --- */
+.sidebar {
+    width: 280px;
+    background-color: var(--sidebar-bg);
+    padding: 30px 0;
+    box-shadow: 3px 0 10px var(--shadow-dark);
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--border-color);
+}
+
+.logo {
+    color: var(--accent-blue);
+    text-align: center;
+    margin-bottom: 50px;
+    font-size: 1.8rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+.logo .fas {
+    font-size: 2rem;
+    color: var(--accent-green); /* Green icon for a tech feel */
+}
+
+.sidebar nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar nav ul li a {
+    display: flex;
+    align-items: center;
+    padding: 18px 30px;
+    color: var(--text-light);
+    text-decoration: none;
+    transition: all 0.3s ease-in-out;
+    border-left: 5px solid transparent;
+}
+
+.sidebar nav ul li a i {
+    margin-right: 15px;
+    font-size: 1.2rem;
+    width: 25px;
+    text-align: center;
+}
+
+.sidebar nav ul li a:hover {
+    background-color: rgba(88, 166, 255, 0.1); 
+    color: var(--accent-blue);
+    border-left-color: var(--accent-blue);
+}
+.sidebar nav ul li a.active {
+    background-color: rgba(88, 166, 255, 0.2);
+    color: var(--accent-blue);
+    border-left-color: var(--accent-blue);
+    font-weight: 600;
+}
+
+.logout-link {
+    margin-top: auto; 
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* --- Main Content Area --- */
+.main-content {
+    flex-grow: 1;
+    padding: 40px;
+    background-color: var(--primary-bg);
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 50px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.dashboard-header h1 {
+    font-size: 2.5rem;
+    color: var(--text-dark);
+    font-weight: 700;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: var(--secondary-bg);
+    padding: 10px 20px;
+    border-radius: 25px;
+    box-shadow: 0 2px 5px var(--shadow-light);
+}
+.user-profile .user-name {
+    color: var(--accent-green); /* Use green for active user status */
+    font-weight: 600;
+}
+.user-profile .profile-icon {
+    font-size: 1.8rem;
+    color: var(--accent-blue);
+}
+
+/* --- Quick Stats Grid --- */
+.quick-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    margin-bottom: 60px;
+}
+
+.stat-card {
+    background-color: var(--secondary-bg);
+    padding: 25px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 5px 15px var(--shadow-light);
+    border: 1px solid var(--border-color);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px var(--shadow-dark);
+}
+
+.stat-card .icon-wrapper {
+    background-color: rgba(88, 166, 255, 0.15); 
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.stat-card .icon-wrapper .fas {
+    font-size: 1.8rem;
+    color: var(--accent-blue);
+}
+
+.stat-card .stat-info h3 {
+    margin: 0;
+    color: var(--text-light);
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.stat-card .stat-info .stat-value {
+    margin: 5px 0 0;
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: var(--text-dark);
+    font-family: 'Fira Code', monospace; /* Code-like font for values */
+}
+
+/* --- Dashboard Sections --- */
+.dashboard-section {
+    background-color: var(--secondary-bg);
+    padding: 30px;
+    border-radius: 12px;
+    margin-bottom: 40px;
+    box-shadow: 0 5px 15px var(--shadow-light);
+    border: 1px solid var(--border-color);
+}
+
+.dashboard-section h2 {
+    color: var(--text-dark);
+    font-size: 1.8rem;
+    margin-top: 0;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.dashboard-section h2 .fas {
+    color: var(--accent-blue);
+    font-size: 1.5rem;
+}
+
+/* Data Table Styling */
+.table-responsive {
+    overflow-x: auto;
+}
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+.data-table th, .data-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.data-table th {
+    background-color: rgba(88, 166, 255, 0.1); 
+    color: var(--accent-blue);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+.data-table tbody tr:hover {
+    background-color: rgba(88, 166, 255, 0.05);
+    cursor: pointer;
+}
+
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+.status-badge.active {
+    background-color: rgba(63, 185, 80, 0.2);
+    color: var(--accent-green); 
+}
+.status-badge.pending {
+    background-color: rgba(248, 140, 82, 0.2);
+    color: var(--accent-orange); 
+}
+.status-badge.completed {
+    background-color: rgba(88, 166, 255, 0.2); 
+    color: var(--accent-blue); 
+}
+
+.action-btn {
+    background-color: var(--accent-blue);
+    color: var(--primary-bg); 
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+.action-btn:hover {
+    background-color: #4C9AFF; 
+}
+.action-btn .fas {
+    font-size: 0.8em;
+}
+
+/* Analytics Charts Section */
+.analytics-charts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 30px;
+}
+.chart-placeholder {
+    background-color: var(--primary-bg); 
+    border: 1px dashed var(--border-color);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    height: 250px; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: var(--text-light);
+    font-family: 'Fira Code', monospace;
+}
+.chart-placeholder p {
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    color: var(--accent-green); /* Green text for placeholders */
+}
+.chart-placeholder img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+    .dashboard-container {
+        flex-direction: column;
+    }
+    .sidebar {
+        width: 100%;
+        height: auto;
+        padding: 20px 0;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+    }
+    .sidebar nav ul {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px 20px;
+    }
+    .sidebar nav ul li a {
+        padding: 10px 15px;
+        border-left: none;
+        border-bottom: 3px solid transparent;
+    }
+    .sidebar nav ul li a:hover,
+    .sidebar nav ul li a.active {
+        border-bottom-color: var(--accent-blue);
+        border-left-color: transparent; 
+    }
+    .logout-link {
+        margin-top: 20px;
+        border-top: none;
+        width: 100%;
+        text-align: center;
+    }
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+    .quick-stats-grid {
+        grid-template-columns: 1fr;
+    }
+    .analytics-charts {
+        grid-template-columns: 1fr;
+    }
+}

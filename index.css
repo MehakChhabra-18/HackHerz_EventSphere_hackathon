@@ -1,0 +1,88 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+    overflow:hidden;
+}
+
+
+header {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    
+    padding: 20px 0;
+    z-index: 10;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    
+    justify-content: center;
+    gap: 40px;
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: white;
+    font-weight: 500;
+    font-size: 14px;
+    letter-spacing: 1px;
+    transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
+    color: #ffcc00;
+}
+
+
+.hero {
+    height: 100vh;
+    background: url("img/get.png") no-repeat center center/cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;     
+}
+
+.hero::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.3); /*  background color dark text dikhane ke liye*/
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+    color: white;
+}
+
+.hero-content h1 {
+    font-size: 80px;
+    font-weight: 900;
+    margin-bottom: 30px;
+    line-height: 1.1;
+}
+
+.btn {
+    display: inline-block;
+    padding: 12px 28px;
+    font-size: 16px;
+    color: rgb(255, 255, 255);
+    background-color: rgba(0,0,0,0.5);
+    border: 2px solid white;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #ffcc00;
+    color: black;
+}

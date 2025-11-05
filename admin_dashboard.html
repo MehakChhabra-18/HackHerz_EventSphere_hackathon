@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Event Sphere</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /* CSS PROVIDED BY USER (VS CODE DARK THEME) */
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Fira+Code:wght@400;500;600&display=swap');
+
+        /* UPDATED Root Variables for Code/Blueish Theme */
+        :root {
+            --primary-bg: #0D1117;  /* Deep Navy Blue (VS Code/GitHub Dark) */
+            --secondary-bg: #161B22;  /* Slightly lighter dark blue for cards */
+            --accent-blue: #58A6FF; /* Vibrant Blue Accent (Main Interactive Color) */
+            --accent-green: #3FB950;  /* Success Green Accent */
+            --accent-orange: #F88C52; /* Pending/Warning Orange */
+            --text-light: #C9D1D9;  /* Light grey text */
+            --text-dark: #FFFFFF;/* Pure White for Headings/Big Values */
+            --border-color: rgba(255, 255, 255, 0.1);
+            --sidebar-bg: #0D1117;  
+            --shadow-light: rgba(0, 0, 0, 0.3);
+            --shadow-dark: rgba(0, 0, 0, 0.6);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* --- Sidebar Styling --- */
+        .sidebar {
+            width: 280px;
+            background-color: var(--sidebar-bg);
+            padding: 30px 0;
+            box-shadow: 3px 0 10px var(--shadow-dark);
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .logo {
+            color: var(--accent-blue);
+            text-align: center;
+            margin-bottom: 50px;
+            font-size: 1.8rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .logo .fas {
+            font-size: 2rem;
+            color: var(--accent-green); /* Green icon for a tech feel */
+        }
+
+        .sidebar nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar nav ul li a {
+            display: flex;
+            align-items: center;
+            padding: 18px 30px;
+            color: var(--text-light);
+            text-decoration: none;
+            transition: all 0.3s ease-in-out;
+            border-left: 5px solid transparent;
+        }
+
+        .sidebar nav ul li a i {
+            margin-right: 15px;
+            font-size: 1.2rem;
+            width: 25px;
+            text-align: center;
+        }
+
+        .sidebar nav ul li a:hover {
+            background-color: rgba(88, 166, 255, 0.1); 
+            color: var(--accent-blue);
+            border-left-color: var(--accent-blue);
+        }
+        .sidebar nav ul li a.active {
+            background-color: rgba(88, 166, 255, 0.2);
+            color: var(--accent-blue);
+            border-left-color: var(--accent-blue);
+            font-weight: 600;
+        }
+
+        .logout-link {
+            margin-top: auto; 
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* --- Main Content Area --- */
+        .main-content {
+            flex-grow: 1;
+            padding: 40px;
+            background-color: var(--primary-bg);
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 50px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .dashboard-header h1 {
+            font-size: 2.5rem;
+            color: var(--text-dark);
+            font-weight: 700;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background-color: var(--secondary-bg);
+            padding: 10px 20px;
+            border-radius: 25px;
+            box-shadow: 0 2px 5px var(--shadow-light);
+        }
+        .user-profile .user-name {
+            color: var(--accent-green); /* Use green for active user status */
+            font-weight: 600;
+        }
+        .user-profile .profile-icon {
+            font-size: 1.8rem;
+            color: var(--accent-blue);
+        }
+
+        /* --- Quick Stats Grid --- */
+        .quick-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .stat-card {
+            background-color: var(--secondary-bg);
+            padding: 25px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 5px 15px var(--shadow-light);
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px var(--shadow-dark);
+        }
+
+        .stat-card .icon-wrapper {
+            background-color: rgba(88, 166, 255, 0.15); 
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .stat-card .icon-wrapper .fas {
+            font-size: 1.8rem;
+            color: var(--accent-blue);
+        }
+
+        /* Stat Card Color Variations (using JS-updated background colors) */
+        .stat-card:nth-child(1) .icon-wrapper { color: var(--accent-green); background-color: rgba(63, 185, 80, 0.15); } 
+        .stat-card:nth-child(2) .icon-wrapper { color: var(--accent-blue); background-color: rgba(88, 166, 255, 0.15); } 
+        .stat-card:nth-child(3) .icon-wrapper { color: var(--accent-orange); background-color: rgba(248, 140, 82, 0.15); } 
+        .stat-card:nth-child(4) .icon-wrapper { color: var(--accent-red); background-color: rgba(231, 76, 60, 0.15); } 
+
+
+        .stat-card .stat-info h3 {
+            margin: 0;
+            color: var(--text-light);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .stat-card .stat-info .stat-value {
+            margin: 5px 0 0;
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            font-family: 'Fira Code', monospace; /* Code-like font for values */
+        }
+
+        /* --- Dashboard Sections --- */
+        .dashboard-section {
+            background-color: var(--secondary-bg);
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            box-shadow: 0 5px 15px var(--shadow-light);
+            border: 1px solid var(--border-color);
+        }
+
+        .dashboard-section h2 {
+            color: var(--text-dark);
+            font-size: 1.8rem;
+            margin-top: 0;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .dashboard-section h2 .fas {
+            color: var(--accent-blue);
+            font-size: 1.5rem;
+        }
+
+        /* Data Table Styling */
+        .table-responsive {
+            overflow-x: auto;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            color: var(--text-light);
+        }
+        .data-table th, .data-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .data-table th {
+            background-color: rgba(88, 166, 255, 0.1); 
+            color: var(--accent-blue);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+        .data-table tbody tr:hover {
+            background-color: rgba(88, 166, 255, 0.05);
+            cursor: pointer;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: capitalize;
+            color: var(--primary-bg); /* Ensuring badge text contrasts with BG */
+        }
+        .status-badge.active {
+            background-color: var(--accent-green); 
+            color: var(--primary-bg);
+        }
+        .status-badge.pending {
+            background-color: var(--accent-orange); 
+            color: var(--primary-bg);
+        }
+        .status-badge.completed {
+            background-color: var(--accent-blue); 
+            color: var(--primary-bg);
+        }
+
+        .action-btn {
+            background-color: var(--accent-blue);
+            color: var(--primary-bg); 
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .action-btn:hover {
+            background-color: #4C9AFF; 
+        }
+
+        /* Analytics Charts Section */
+        .analytics-charts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+        .chart-placeholder {
+            background-color: var(--primary-bg); 
+            border: 1px dashed var(--border-color);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            height: 250px; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-light);
+            font-family: 'Fira Code', monospace;
+        }
+        .chart-placeholder p {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            color: var(--accent-green); /* Green text for placeholders */
+        }
+        .chart-placeholder img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            opacity: 0.6;
+        }
+
+        /* Media Queries for Responsiveness */
+        @media (max-width: 768px) {
+            .dashboard-container {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                padding: 20px 0;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+            .sidebar nav ul {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px 20px;
+            }
+            .sidebar nav ul li a {
+                padding: 10px 15px;
+                border-left: none;
+                border-bottom: 3px solid transparent;
+            }
+            .sidebar nav ul li a:hover,
+            .sidebar nav ul li a.active {
+                border-bottom-color: var(--accent-blue);
+                border-left-color: transparent; 
+            }
+            .logout-link {
+                margin-top: 20px;
+                border-top: none;
+                width: 100%;
+                text-align: center;
+            }
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+                margin-bottom: 30px;
+            }
+            .quick-stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .analytics-charts {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <h2 class="logo"><i class="fas fa-microchip"></i> EventSphere Admin</h2>
+            <nav>
+                <ul>
+                    <li class="active"><a href="admin_dashboard.html" data-section="overview"><i class="fas fa-columns"></i> Overview</a></li>
+                    <li><a href="manage_event.html" data-section="manage-events"><i class="fas fa-calendar-alt"></i> Manage Events</a></li>
+                    <li><a href="participants.html" data-section="participants"><i class="fas fa-users-cog"></i> Participants</a></li>
+                    <li><a href="manage_judges.html" data-section="judges"><i class="fas fa-user-tie"></i> Manage Judges</a></li>
+                    <li><a href="submissions.html" data-section="submissions"><i class="fas fa-file-code"></i> Submissions</a></li>
+                    <li><a href="analytics.html" data-section="analytics"><i class="fas fa-chart-line"></i> Analytics</a></li>
+                    <li><a href="settings.html" data-section="settings"><i class="fas fa-cogs"></i> Settings</a></li>
+                    <li class="logout-link"><a href="login.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="dashboard-header">
+                <h1>Dashboard Overview</h1>
+                <div class="user-profile">
+                    <span class="welcome-text">Welcome back,</span>
+                    <span class="user-name">Admin User</span>
+                    <i class="fas fa-user-circle profile-icon"></i>
+                </div>
+            </header>
+
+            <section class="quick-stats-grid">
+                <div class="stat-card">
+                    <div class="icon-wrapper"><i class="fas fa-calendar-check"></i></div>
+                    <div class="stat-info">
+                        <h3>Active Events</h3>
+                        <p class="stat-value" id="activeEvents">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon-wrapper"><i class="fas fa-users"></i></div>
+                    <div class="stat-info">
+                        <h3>Total Participants</h3>
+                        <p class="stat-value" id="totalParticipants">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon-wrapper"><i class="fas fa-hourglass-half"></i></div>
+                    <div class="stat-info">
+                        <h3>Pending Submissions</h3>
+                        <p class="stat-value" id="pendingSubmissions">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon-wrapper"><i class="fas fa-gavel"></i></div>
+                    <div class="stat-info">
+                        <h3>Pending Judging</h3>
+                        <p class="stat-value" id="pendingJudging">4</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section recent-events-section">
+                <h2><i class="fas fa-list-alt"></i> Recent Events</h2>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Event Name</th>
+                                <th>Status</th>
+                                <th>Participants</th>
+                                <th>Submissions</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentEventsTableBody">
+                            </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="dashboard-section analytics-overview-section">
+                <h2><i class="fas fa-chart-bar"></i> Analytics Overview</h2>
+                <div class="analytics-charts">
+                    <div class="chart-placeholder">
+                        <p>Participant Registration Trend (Placeholder Chart)</p>
+                        <img src="https://via.placeholder.com/400x200/1E1E2F/FFFFFF?text=Chart+1" alt="Chart Placeholder 1">
+                    </div>
+                    <div class="chart-placeholder">
+                        <p>Submission vs Evaluation Status (Placeholder Chart)</p>
+                        <img src="https://via.placeholder.com/400x200/1E1E2F/FFFFFF?text=Chart+2" alt="Chart Placeholder 2">
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <script>
+        // Note: The current date is fixed for reliable status testing: Nov 5, 2025
+        const today = new Date('2025-11-05T00:00:00'); 
+        
+        // Local Storage Keys (Must match keys used on other pages)
+        const eventStorageKey = 'adminEventsData'; 
+        const participantStorageKey = 'adminParticipantsData';
+        const judgeStorageKey = 'adminJudgesData'; 
+        
+        let eventsData = [];
+        let participantsData = [];
+        let judgesData = [];
+
+        // --- DATA LOADING & STATUS UTILITIES ---
+
+        function loadAllData() {
+            // 1. Load Events Data (and calculate active/completed)
+            const storedEvents = localStorage.getItem(eventStorageKey);
+            if (storedEvents) {
+                eventsData = JSON.parse(storedEvents);
+            }
+            
+            // 2. Load Participants Data
+            const storedParticipants = localStorage.getItem(participantStorageKey);
+            if (storedParticipants) {
+                participantsData = JSON.parse(storedParticipants);
+            }
+            
+            // 3. Load Judges Data
+            const storedJudges = localStorage.getItem(judgeStorageKey);
+            if (storedJudges) {
+                judgesData = JSON.parse(storedJudges);
+            }
+        }
+        
+        function getEventStatus(startDateString, endDateString) {
+            const start = new Date(startDateString + 'T00:00:00');
+            const end = new Date(endDateString + 'T23:59:59'); 
+            
+            if (end < today) return { status: "Completed", className: "completed" };
+            if (start <= today && end >= today) return { status: "Active", className: "active" };
+            return { status: "Upcoming", className: "pending" };
+        }
+        
+        function countParticipantsForEvent(eventName) {
+            return participantsData.filter(p => p.event === eventName).length;
+        }
+
+        function countSubmissionsForEvent(eventName) {
+             return participantsData.filter(p => p.event === eventName && p.status === 'Submitted').length;
+        }
+
+        // --- RENDERING FUNCTIONS ---
+
+        /** Updates the Quick Stats Cards. */
+        function updateQuickStats() {
+            const totalParticipants = participantsData.length;
+            
+            const activeEvents = eventsData.filter(e => getEventStatus(e.startDate, e.endDate).status === 'Active').length;
+            
+            const pendingSubmissions = participantsData.filter(p => p.status !== 'Submitted').length;
+
+            const totalAssigned = judgesData.reduce((sum, j) => sum + j.total, 0);
+            const totalReviewed = judgesData.reduce((sum, j) => sum + j.reviewed, 0);
+            const pendingJudging = totalAssigned - totalReviewed;
+
+            document.getElementById('activeEvents').textContent = activeEvents;
+            document.getElementById('totalParticipants').textContent = totalParticipants;
+            document.getElementById('pendingSubmissions').textContent = pendingSubmissions < 0 ? 0 : pendingSubmissions;
+            document.getElementById('pendingJudging').textContent = pendingJudging < 0 ? 0 : pendingJudging;
+        }
+
+        /** Renders the Recent Events table. */
+        function renderRecentEventsTable() {
+            const tableBody = document.getElementById('recentEventsTableBody');
+            tableBody.innerHTML = '';
+
+            // Sort by Start Date (newest first)
+            const sortedEvents = [...eventsData].sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
+
+            // Only show the last 4 events
+            const recentEvents = sortedEvents.slice(0, 4);
+
+            if (recentEvents.length === 0) {
+                 tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--light-text);">No events available.</td></tr>`;
+                 return;
+            }
+
+            recentEvents.forEach(event => {
+                const { status, className } = getEventStatus(event.startDate, event.endDate);
+                const participantsCount = countParticipantsForEvent(event.name);
+                const submissionsCount = countSubmissionsForEvent(event.name);
+                
+                const newRow = tableBody.insertRow();
+                newRow.innerHTML = `
+                    <td>${event.name}</td>
+                    <td><span class="status-badge ${className}">${status}</span></td>
+                    <td>${participantsCount}</td>
+                    <td>${submissionsCount}</td>
+                    <td><button class="action-btn view-btn"><i class="fas fa-eye"></i> View</button></td>
+                `;
+            });
+        }
+        
+        /** Handles sidebar navigation state. */
+        function setSidebarActiveLink() {
+            // This is the overview page, so the first link is active
+            document.querySelector('a[href="admin_dashboard.html"]').classList.add('active');
+        }
+        
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            loadAllData();
+            setSidebarActiveLink();
+            updateQuickStats();
+            renderRecentEventsTable();
+        });
+    </script>
+</body>
+</html>

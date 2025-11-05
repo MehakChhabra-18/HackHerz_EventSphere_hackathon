@@ -1,0 +1,66 @@
+@import url('admin_base.css');
+
+/* ===== PARTICIPANTS TABLE ===== */
+.table-responsive {
+  background: #161628;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 4px 15px rgba(165, 110, 255, 0.1);
+  width: 100%;
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.data-table th,
+.data-table td {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid #2e2e5a;
+}
+
+.data-table th {
+  background-color: #1e1e3f;
+  color: #a56eff;
+  font-weight: 600;
+}
+
+.data-table tr:hover {
+  background-color: #1a1a35;
+}
+
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.status-badge.active {
+  background-color: #4caf50;
+  color: white;
+}
+
+.status-badge.pending {
+  background-color: #ff9800;
+  color: white;
+}
+
+.action-btn {
+  background-color: #a56eff;
+  border: none;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background 0.3s;
+}
+
+.action-btn:hover {
+  background-color: #8a4ce8;
+}

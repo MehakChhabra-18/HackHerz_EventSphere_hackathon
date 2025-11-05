@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings | Admin Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="admin_dashboard.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* CSS for Settings Layout - ye styles admin_dashboard.css me hone chahiye */
+        .settings-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+        .settings-card {
+            background-color: var(--secondary-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        .settings-card h3 {
+            color: var(--accent-blue);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-top: 0;
+            margin-bottom: 25px;
+            font-size: 1.5rem;
+        }
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px dashed var(--border-color);
+        }
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+        .setting-item label {
+            font-weight: 600;
+        }
+        .setting-item p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        /* Toggle Switch Styling */
+        .switch {
+          position: relative;
+          display: inline-block;
+          width: 50px;
+          height: 24px;
+        }
+        .switch input {opacity: 0; width: 0; height: 0;}
+        .slider {
+          position: absolute;
+          cursor: pointer;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: var(--primary-bg);
+          -webkit-transition: .4s;
+          transition: .4s;
+          border-radius: 24px;
+          border: 1px solid var(--text-light);
+        }
+        .slider:before {
+          position: absolute;
+          content: "";
+          height: 16px;
+          width: 16px;
+          left: 4px;
+          bottom: 4px;
+          background-color: white;
+          -webkit-transition: .4s;
+          transition: .4s;
+          border-radius: 50%;
+        }
+        input:checked + .slider {
+          background-color: var(--accent-green);
+          border-color: var(--accent-green);
+        }
+        input:checked + .slider:before {
+          -webkit-transform: translateX(26px);
+          -ms-transform: translateX(26px);
+          transform: translateX(26px);
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        
+      <aside class="sidebar">
+            <h2 class="logo"><i class="fas fa-microchip"></i> EventSphere Admin</h2>
+            <nav>
+                <ul>
+                    <li><a href="overview.html" class="active" data-section="overview"><i class="fas fa-columns"></i> Overview</a></li>
+                    <li><a href="manage_event.html" data-section="manage-events"><i class="fas fa-calendar-alt"></i> Manage Events</a></li>
+                    <li><a href="participants.html" data-section="participants"><i class="fas fa-users-cog"></i> Participants</a></li>
+                    <li><a href="manage_judges.html" data-section="judges"><i class="fas fa-user-tie"></i> Manage Judges</a></li>
+                    <li><a href="submissions.html" data-section="submissions"><i class="fas fa-file-code"></i> Submissions</a></li>
+                    <li><a href="analytics.html" data-section="analytics"><i class="fas fa-chart-line"></i> Analytics</a></li>
+                    <li><a href="settings.html" data-section="settings"><i class="fas fa-cogs"></i> Settings</a></li>
+                    <li class="logout-link"><a href="login.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="main-content">
+            <header class="dashboard-header">
+                <h1>Platform Settings</h1>
+            </header>
+
+            <div class="settings-container">
+                
+                <div class="settings-card">
+                    <h3><i class="fas fa-globe"></i> General Platform Settings</h3>
+                    
+                    <div class="setting-item">
+                        <div>
+                            <label>Registration Status</label>
+                            <p>Globally enable or disable all event registrations.</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-item">
+                        <div>
+                            <label>Default Judging Criteria</label>
+                            <p>Set the standard criteria for all new events.</p>
+                        </div>
+                        <button class="action-btn" style="background-color: var(--accent-blue);"><i class="fas fa-edit"></i> Edit Criteria</button>
+                    </div>
+
+                    <div class="setting-item">
+                        <div>
+                            <label>Data Backup & Export</label>
+                            <p>Download full event, user, and submission data.</p>
+                        </div>
+                        <button class="action-btn" style="background-color: var(--accent-orange);"><i class="fas fa-download"></i> Export All</button>
+                    </div>
+
+                </div>
+                
+                <div class="settings-card">
+                    <h3><i class="fas fa-shield-alt"></i> Security & Access</h3>
+
+                     <div class="setting-item">
+                        <div>
+                            <label>Admin 2FA</label>
+                            <p>Require Two-Factor Authentication for Admin roles.</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div>
+                            <label>Manage Roles & Permissions</label>
+                            <p>View and manage specific user access levels (Admin, Judge, Participant).</p>
+                        </div>
+                        <button class="action-btn" style="background-color: var(--accent-purple);"><i class="fas fa-users-cog"></i> Manage Users</button>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Participants | Admin Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="admin_dashboard.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* All existing CSS styles retained here for completeness and theme consistency */
+        .status-badge { padding: 5px 10px; border-radius: 4px; font-weight: 600; font-size: 0.85em; }
+        .status-registered { background-color: rgba(88, 166, 255, 0.2); color: var(--accent-blue, #58A6FF); }
+        .status-submitted { background-color: rgba(63, 185, 80, 0.2); color: var(--accent-green, #3FB950); }
+        .status-incomplete { background-color: rgba(248, 140, 82, 0.2); color: var(--accent-orange, #F88C52); }
+        .action-icon { color: var(--text-light, #C9D1D9); margin-right: 15px; cursor: pointer; transition: color 0.2s; font-size: 1rem; }
+        .action-icon:hover { color: var(--accent-blue, #58A6FF); }
+        .participant-table-wrapper { background-color: var(--secondary-bg, #161B22); padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px var(--shadow-light, rgba(0, 0, 0, 0.3)); border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1)); overflow-x: auto; }
+        .participant-table { width: 100%; border-collapse: collapse; }
+        .participant-table th { background-color: rgba(88, 166, 255, 0.1); color: var(--accent-blue, #58A6FF); font-weight: 600; text-transform: uppercase; font-size: 0.9rem; }
+        .participant-table td { color: var(--text-light, #C9D1D9); padding: 15px; border-bottom: 1px solid var(--border-color, rgba(255, 255, 255, 0.08)); }
+        .participant-table tbody tr:hover { background-color: rgba(88, 166, 255, 0.05); }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6); }
+        .modal-content { background-color: var(--primary-bg, #22272E); margin: 10% auto; padding: 30px; border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1)); border-radius: 8px; width: 80%; max-width: 600px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5); color: var(--text-light, #C9D1D9); }
+        .close-btn { color: #aaa; float: right; font-size: 28px; font-weight: bold; transition: color 0.2s; }
+        .close-btn:hover, .close-btn:focus { color: white; text-decoration: none; cursor: pointer; }
+        .modal .form-group { margin-bottom: 15px; }
+        .modal label { display: block; margin-bottom: 5px; font-weight: 600; }
+        .modal input, .modal select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid var(--border-color); background-color: var(--secondary-bg, #161B22); color: var(--text-light); border-radius: 4px; }
+        .btn-modal-save { background-color: var(--accent-green, #3FB950); color: black; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; margin-top: 20px; }
+        .btn-modal-save:hover { background-color: #34aa44; }
+        .filter-container { margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .filter-container label { font-weight: 600; color: var(--text-light, #C9D1D9); }
+        .filter-container select { 
+            padding: 8px 10px; 
+            border: 1px solid var(--border-color); 
+            background-color: var(--secondary-bg, #161B22);
+            color: var(--text-light);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+
+        <div id="addParticipantModal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <h2 id="modalTitle"><i class="fas fa-user-plus"></i> Add New Participant</h2>
+                <form id="newParticipantForm">
+                    <div class="form-group">
+                        <label for="pName">Name</label>
+                        <input type="text" id="pName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="pEmail">Email</label>
+                        <input type="email" id="pEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="pEvent">Registered Event</label>
+                        <select id="pEventSelect" required>
+                            <option value="">-- Select Event --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="pStatus">Submission Status</label>
+                        <select id="pStatus" required>
+                            <option value="Registered">Registered</option>
+                            <option value="Incomplete">Incomplete</option>
+                            <option value="Submitted">Submitted</option>
+                        </select>
+                    </div>
+                    <input type="hidden" id="pIndex">
+                    <button type="submit" class="btn-modal-save"><i class="fas fa-save"></i> Save Participant</button>
+                </form>
+            </div>
+        </div>
+        <aside class="sidebar">
+            <h2 class="logo"><i class="fas fa-microchip"></i> EventSphere Admin</h2>
+            <nav>
+                <ul>
+                    <li><a href="admin_dashboard.html" data-section="overview"><i class="fas fa-columns"></i> Overview</a></li>
+                    <li><a href="manage_event.html" data-section="manage-events"><i class="fas fa-calendar-alt"></i> Manage Events</a></li>
+                    <li><a href="participants.html" class="active" data-section="participants"><i class="fas fa-users-cog"></i> **Participants**</a></li>
+                    <li><a href="manage_judges.html" data-section="judges"><i class="fas fa-user-tie"></i> Manage Judges</a></li>
+                    <li><a href="submissions.html" data-section="submissions"><i class="fas fa-file-code"></i> Submissions</a></li>
+                    <li><a href="analytics.html" data-section="analytics"><i class="fas fa-chart-line"></i> Analytics</a></li>
+                    <li><a href="settings.html" data-section="settings"><i class="fas fa-cogs"></i> Settings</a></li>
+                    <li class="logout-link"><a href="login.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <main class="main-content">
+            <header class="dashboard-header">
+                <h1>Manage Participants</h1>
+                <div class="user-profile">
+                    <span class="welcome-text">Welcome back,</span>
+                    <span class="user-name">Admin User</span>
+                    <i class="fas fa-user-circle profile-icon"></i>
+                </div>
+            </header>
+
+            <section class="quick-stats-grid">
+                <div class="stat-card">
+                    <div class="icon-wrapper"><i class="fas fa-users"></i></div>
+                    <div class="stat-info">
+                        <h3>Total Participants</h3>
+                        <p class="stat-value" id="totalParticipants">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon-wrapper"><i class="fas fa-file-code"></i></div>
+                    <div class="stat-info">
+                        <h3>Submissions Received</h3>
+                        <p class="stat-value" id="totalSubmissions">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon-wrapper"><i class="fas fa-percent"></i></div>
+                    <div class="stat-info">
+                        <h3>Submission Rate</h3>
+                        <p class="stat-value" id="submissionRate">0%</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon-wrapper"><i class="fas fa-medal"></i></div>
+                    <div class="stat-info">
+                        <h3>Events Registered</h3>
+                        <p class="stat-value" id="eventsCount">0</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h2><i class="fas fa-user-friends"></i> Participant List</h2>
+                
+                <div class="filter-container">
+                    <label for="eventFilter">Filter by Event:</label>
+                    <select id="eventFilter">
+                        <option value="all">Show All Events</option>
+                    </select>
+                </div>
+                
+                <div class="participant-table-wrapper">
+                    <table class="participant-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Registered Event</th>
+                                <th>Submission Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="participantTableBody">
+                            </tbody>
+                    </table>
+                </div>
+                <button class="action-btn" id="addParticipantBtn" style="margin-top: 20px;"><i class="fas fa-user-plus"></i> Add New Participant</button>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // --- GLOBAL DATA KEYS ---
+        const eventLocalStorageKey = 'adminEventsData';
+        const participantLocalStorageKey = 'adminParticipantsData';
+
+        let eventsList = []; // Array of event names (from Local Storage)
+        let participantsData = []; // Array of participant objects (from Local Storage)
+
+        // --- DATA MANAGEMENT FUNCTIONS ---
+
+        /** Loads all necessary data from Local Storage. */
+        function loadAllData() {
+            // Load Events List (from Manage Events page)
+            const storedEventsData = localStorage.getItem(eventLocalStorageKey);
+            let rawEvents = [];
+            if (storedEventsData) {
+                rawEvents = JSON.parse(storedEventsData);
+            } else {
+                // Initial default event data if nothing exists (for fresh start)
+                rawEvents = [
+                    { name: "Web Dev Innovation Sprint", startDate: "2025-11-03", endDate: "2025-11-04", participants: 250 }, 
+                    { name: "AI for Social Good", startDate: "2025-12-12", endDate: "2025-12-15", participants: 180 },
+                    { name: "Data Science Challenge", startDate: "2025-05-10", endDate: "2025-05-12", participants: 100 },
+                    { name: "Gaming Hackathon", startDate: "2025-10-01", endDate: "2025-10-02", participants: 80 },
+                ];
+            }
+            // Map the event objects to just an array of names for the dropdowns
+            eventsList = rawEvents.map(e => e.name);
+
+            // Load Participants Data
+            const storedParticipantsData = localStorage.getItem(participantLocalStorageKey);
+            if (storedParticipantsData) {
+                participantsData = JSON.parse(storedParticipantsData);
+            } else {
+                // Initial default participants (only if local storage is completely empty)
+                participantsData = [
+                    { name: "Priya Singh", email: "priya.s@example.com", event: "Web Dev Innovation Sprint", status: "Submitted" },
+                    { name: "Amit Verma", email: "amit.v@example.com", event: "AI for Social Good", status: "Incomplete" },
+                    { name: "John Doe", email: "john.d@example.com", event: "Data Science Challenge", status: "Registered" },
+                    { name: "Sneha Reddy", email: "sneha.r@example.com", event: "Web Dev Innovation Sprint", status: "Submitted" },
+                ];
+                saveParticipants(); // Save initial participant data
+            }
+        }
+
+        /** Saves the current participantsData array to Local Storage. */
+        function saveParticipants() {
+            localStorage.setItem(participantLocalStorageKey, JSON.stringify(participantsData));
+        }
+
+        // --- UI RENDERING FUNCTIONS ---
+
+        /** Populates the event dropdowns (Modal form and Filter dropdown). */
+        function populateEventDropdowns() {
+            const selectModal = document.getElementById('pEventSelect');
+            const selectFilter = document.getElementById('eventFilter');
+
+            // Clear previous options
+            selectModal.innerHTML = '<option value="">-- Select Event --</option>';
+            selectFilter.innerHTML = '<option value="all">Show All Events</option>';
+
+            eventsList.forEach(event => {
+                const optModal = document.createElement('option');
+                optModal.value = event;
+                optModal.textContent = event;
+                selectModal.appendChild(optModal);
+
+                const optFilter = document.createElement('option');
+                optFilter.value = event;
+                optFilter.textContent = event;
+                selectFilter.appendChild(optFilter);
+            });
+            
+            document.getElementById('eventFilter').onchange = renderAllParticipants;
+            document.getElementById('eventsCount').textContent = eventsList.length;
+        }
+
+        /** Renders a single participant row into the table. */
+        function renderParticipantRow(participant, index) {
+            const tableBody = document.getElementById('participantTableBody');
+            const newRow = tableBody.insertRow();
+            
+            let statusClass;
+            switch (participant.status) {
+                case 'Submitted': statusClass = 'status-submitted'; break;
+                case 'Incomplete': statusClass = 'status-incomplete'; break;
+                case 'Registered': 
+                default: statusClass = 'status-registered';
+            }
+
+            // Using data-p-index for easy identification during edit/update
+            newRow.innerHTML = `
+                <td>${participant.name}</td>
+                <td>${participant.email}</td>
+                <td>${participant.event}</td>
+                <td><span class="status-badge ${statusClass}">${participant.status}</span></td>
+                <td>
+                    <i class="fas fa-edit action-icon edit-icon" title="Edit Participant" data-p-index="${index}"></i>
+                    <i class="fas fa-envelope action-icon email-icon" title="Send Email" data-p-email="${participant.email}"></i>
+                </td>
+            `;
+        }
+        
+        /** Clears the table and re-renders all participants based on the current filter. */
+        function renderAllParticipants() {
+            const tableBody = document.getElementById('participantTableBody');
+            tableBody.innerHTML = ''; 
+            
+            const selectedEvent = document.getElementById('eventFilter').value;
+            
+            // 1. Filter the data based on selectedEvent
+            let filteredData = participantsData.filter(p => {
+                return selectedEvent === 'all' || p.event === selectedEvent;
+            });
+
+            // 2. Sort the data by event name (Grouping participants)
+            filteredData.sort((a, b) => a.event.localeCompare(b.event) || a.name.localeCompare(b.name));
+
+            // 3. Render the filtered and sorted data
+            filteredData.forEach((participant, index) => {
+                // Find the original index for editing
+                const originalIndex = participantsData.findIndex(p => p.email === participant.email && p.name === participant.name);
+                renderParticipantRow(participant, originalIndex);
+            });
+
+            updateStats();
+            attachActionHandlers();
+        }
+
+        /** Updates the statistic cards. */
+        function updateStats() {
+            const total = participantsData.length;
+            const submitted = participantsData.filter(p => p.status === 'Submitted').length;
+            const rate = total > 0 ? ((submitted / total) * 100).toFixed(1) + '%' : '0%';
+
+            document.getElementById('totalParticipants').textContent = total; 
+            document.getElementById('totalSubmissions').textContent = submitted; 
+            document.getElementById('submissionRate').textContent = rate; 
+        }
+        
+        // --- ACTION HANDLERS ---
+
+        /** Function to open the modal for editing */
+        function openEditModal(index) {
+            const participant = participantsData[index];
+            if (!participant) return;
+
+            // Set modal title and hidden index
+            document.getElementById('modalTitle').innerHTML = `<i class="fas fa-user-edit"></i> Edit Participant: ${participant.name}`;
+            document.getElementById('pIndex').value = index;
+
+            // Populate form fields with current data
+            document.getElementById('pName').value = participant.name;
+            document.getElementById('pEmail').value = participant.email;
+            document.getElementById('pEventSelect').value = participant.event;
+            document.getElementById('pStatus').value = participant.status;
+
+            modal.style.display = "block";
+            populateEventDropdowns(); // Ensure latest events are loaded
+        }
+
+        /** Attaches dynamic click handlers to Action Icons. */
+        function attachActionHandlers() {
+            // Edit Handler
+            document.querySelectorAll('.edit-icon').forEach(icon => {
+                icon.addEventListener('click', function() {
+                    const index = parseInt(this.getAttribute('data-p-index'));
+                    
+                    const confirmEdit = confirm(`Do you want to edit the participant: ${participantsData[index].name}?`);
+                    if (confirmEdit) {
+                        openEditModal(index);
+                    }
+                });
+            });
+
+            // Email Handler
+            document.querySelectorAll('.email-icon').forEach(icon => {
+                icon.addEventListener('click', function() {
+                    const pEmail = this.getAttribute('data-p-email');
+                    // Directly open mail client
+                    window.location.href = `mailto:${pEmail}`;
+                });
+            });
+        }
+        
+        // --- MODAL LOGIC ---
+        const modal = document.getElementById("addParticipantModal");
+        const btn = document.getElementById("addParticipantBtn");
+        const span = document.getElementsByClassName("close-btn")[0];
+        const participantForm = document.getElementById("newParticipantForm");
+
+        // 1. Open Modal (Add Mode)
+        btn.onclick = function() {
+            // Reset form for Add mode
+            participantForm.reset();
+            document.getElementById('modalTitle').innerHTML = `<i class="fas fa-user-plus"></i> Add New Participant`;
+            document.getElementById('pIndex').value = ''; // Clear index for Add mode
+            
+            modal.style.display = "block";
+            populateEventDropdowns(); 
+        }
+
+        // 2. Close Modal (X button)
+        span.onclick = function() {
+            modal.style.display = "none";
+            participantForm.reset(); 
+        }
+
+        // 3. Close Modal (Outside click)
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+                participantForm.reset(); 
+            }
+        }
+
+        // 4. Form Submission (Add/Edit Logic)
+        participantForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const index = document.getElementById('pIndex').value;
+            const newName = document.getElementById('pName').value;
+            const newEmail = document.getElementById('pEmail').value;
+            const newEvent = document.getElementById('pEventSelect').value; 
+            const newStatus = document.getElementById('pStatus').value;
+
+            if (!newName || !newEmail || !newEvent) {
+                alert("Please fill in all required fields.");
+                return;
+            }
+
+            const participantData = {
+                name: newName,
+                email: newEmail,
+                event: newEvent,
+                status: newStatus 
+            };
+
+            if (index === '') {
+                // ADD MODE: Add new participant
+                participantsData.push(participantData);
+                alert(`Participant ${newName} added successfully!`);
+            } else {
+                // EDIT MODE: Update existing participant
+                participantsData[parseInt(index)] = participantData;
+                alert(`Participant ${newName} updated successfully!`);
+            }
+
+            saveParticipants(); // Save to Local Storage
+            renderAllParticipants();
+            
+            modal.style.display = "none";
+            this.reset();
+        });
+
+        // --- INITIAL LOAD ---
+        document.addEventListener('DOMContentLoaded', () => {
+             loadAllData();
+             populateEventDropdowns();
+             renderAllParticipants();
+        });
+    </script>
+</body>
+</html>
