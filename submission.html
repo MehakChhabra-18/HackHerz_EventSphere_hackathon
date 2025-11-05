@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Submissions | Admin Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* 1. VS CODE/CYBER BLUE THEME VARIABLES (MATCHING DASHBOARD) */
+        :root {
+            --primary-bg: #0D1117; 
+            --secondary-bg: #161B22; 
+            --accent-blue: #58A6FF; 
+            --accent-green: #3FB950; 
+            --accent-orange: #F88C52; 
+            --accent-red: #E94E5C; 
+            --text-light: #C9D1D9; 
+            --text-dark: #FFFFFF;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --sidebar-bg: #0D1117;
+            --shadow-dark: rgba(0, 0, 0, 0.6);
+            --card-shadow: 0 4px 15px var(--shadow-dark);
+            --primary-color: var(--accent-blue);
+            --main-bg-color: var(--secondary-bg);
+            --primary-bg-input: #21262D; 
+            --accent-purple: #7B1FA2; 
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
+        body { background-color: var(--background-color); color: var(--text-light); line-height: 1.6; }
+        a { text-decoration: none; color: inherit; }
+        .dashboard-container { display: flex; min-height: 100vh; }
+
+        /* --- Sidebar Styling --- */
+        .sidebar {
+            width: 250px; 
+            background-color: var(--sidebar-bg);
+            padding: 30px 0;
+            box-shadow: 3px 0 10px var(--shadow-dark);
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border-color);
+            flex-shrink: 0;
+        }
+        .logo {
+            color: var(--accent-blue);
+            text-align: center;
+            margin-bottom: 50px;
+            font-size: 1.5rem; 
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .logo i { font-size: 1.8rem; color: var(--accent-green); margin-right: 0; }
+        .sidebar nav ul { list-style: none; padding: 0; margin: 0; }
+        .sidebar nav ul li a {
+            display: flex;
+            align-items: center;
+            padding: 16px 25px; 
+            color: var(--text-light);
+            text-decoration: none;
+            transition: all 0.3s ease-in-out;
+            border-left: 5px solid transparent;
+        }
+        .sidebar nav ul li a i {
+            margin-right: 15px;
+            font-size: 1.1rem;
+            width: 25px;
+            text-align: center;
+        }
+        .sidebar nav ul li a:hover {
+            background-color: rgba(88, 166, 255, 0.1);
+            color: var(--accent-blue);
+            border-left-color: var(--accent-blue);
+        }
+        .sidebar nav ul li a.active {
+            background-color: rgba(88, 166, 255, 0.2);
+            color: var(--accent-blue);
+            border-left-color: var(--accent-orange);
+            font-weight: 600;
+        }
+        .logout-link { margin-top: auto; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.05); }
+
+        /* --- Main Content Area --- */
+        .main-content { flex-grow: 1; padding: 40px; background-color: var(--primary-bg); }
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start; 
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            gap: 20px;
+            flex-wrap: wrap; 
+        }
+        .dashboard-header h1 {
+            font-size: 2.2rem; 
+            color: var(--text-dark);
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        .user-profile {
+            display: flex;
+            align-items: flex-start; 
+            gap: 10px;
+            flex-grow: 1;
+            justify-content: flex-end; 
+        }
+
+        /* Search + Sort UI */
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap; 
+            justify-content: flex-end;
+        }
+        .search-input {
+            padding: 8px 12px;
+            background: var(--primary-bg-input);
+            border: 1px solid var(--border-color);
+            color: var(--text-light);
+            border-radius: 6px;
+            min-width: 200px; 
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .search-input input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text-light);
+            flex-grow: 1; 
+            font-size: 0.95rem;
+        }
+        .sort-select {
+            padding: 8px 12px;
+            background: var(--primary-bg-input);
+            border: 1px solid var(--border-color);
+            color: var(--text-light);
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .controls .muted { align-self: center; } 
+
+        /* Quick Stats Grid */
+        .quick-stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 25px; margin-bottom: 30px; } 
+        .stat-card {
+            background-color: var(--secondary-bg);
+            padding: 20px; 
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--card-shadow);
+            border-left: 5px solid var(--accent-blue);
+        }
+        .stat-info h3 { font-size: 0.9rem; margin-bottom: 5px; color: var(--text-light); }
+        .stat-info p { font-size: 1.8rem; color: var(--text-dark); font-weight: 700; }
+        .stat-card .icon-wrapper {
+            font-size: 2.2rem; 
+            color: var(--accent-blue);
+            opacity: 0.7;
+            background-color: rgba(88, 166, 255, 0.15);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        /* Table Styles Fixes */
+        .dashboard-section { background-color: var(--main-bg-color); padding: 25px; border-radius: 8px; box-shadow: var(--card-shadow); margin-bottom: 30px; border: 1px solid var(--border-color); }
+        .dashboard-section h2 { font-size: 1.6rem; color: var(--text-dark); border-bottom: 2px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px; }
+        
+        .table-responsive { overflow-x: auto; } 
+        .data-table { width: 100%; min-width: 900px; border-collapse: collapse; } 
+        .data-table th, .data-table td { 
+            padding: 12px 15px; 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08); 
+            text-align: left; 
+            color: var(--text-light); 
+            vertical-align: top; 
+        }
+        .data-table th { background-color: rgba(88, 166, 255, 0.1); color: var(--accent-blue); font-weight: 600; text-transform: uppercase; font-size: 0.85rem; }
+        .data-table tr:hover { background-color: rgba(88, 166, 255, 0.05); }
+
+        /* Progress Bar for Evaluation */
+        .progress-bar-container {
+            width: 90px;
+            background-color: var(--primary-bg-input);
+            border-radius: 5px;
+            height: 8px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+        .progress-text {
+            font-size: 0.75rem; 
+            color: var(--text-light);
+            text-align: left;
+            margin-top: 5px;
+            font-family: 'Fira Code', monospace;
+        }
+        
+        /* Action Buttons (Table level) */
+        .action-btn-table {
+            background-color: var(--accent-purple); 
+            color: white;
+            padding: 6px 10px; 
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            
+            /* --- Table Buttons (View/Assign) Stack Vertically --- */
+            display: flex; 
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            width: 100%; 
+            margin-bottom: 5px; 
+        }
+        .action-btn-table:hover { background-color: #9C27B0; }
+        
+        .assign-btn {
+            background-color: var(--accent-orange);
+        }
+        .assign-btn:hover {
+            background-color: #e68a00;
+        }
+        .view-code-btn {
+            background-color: var(--accent-green);
+        }
+        .view-code-btn:hover {
+            background-color: #31983f;
+        }
+        
+        /* --- FIX: Mass Actions Buttons Styling (Below the table) --- */
+        .mass-actions-section .action-btn-table {
+            /* Override width: 100% and margin-bottom for a horizontal, professional look */
+            width: auto; /* Take only necessary width */
+            min-width: 200px;
+            margin-bottom: 0; 
+        }
+
+        /* The container holding the mass action buttons should be managed via flex properties */
+        .mass-actions-section > div {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap; /* Allow wrapping if screen is too small */
+            align-items: center;
+        }
+        /* --- END FIX: Mass Actions Buttons Styling --- */
+
+
+        /* Modal Styles */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.8); }
+        .modal-content { background-color: var(--main-bg-color); margin: 5% auto; padding: 30px; border-radius: 8px; width: 90%; max-width: 600px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.7); }
+
+        /* Responsive adjustments */
+        @media (max-width: 1200px) {
+            .controls { justify-content: flex-start; } 
+            .dashboard-header { flex-direction: column; align-items: flex-start; }
+            .user-profile { width: 100%; justify-content: flex-start; }
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-container { flex-direction: column; }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                padding: 20px 0;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+            .main-content { padding: 20px; }
+            .dashboard-header h1 { font-size: 1.8rem; }
+            .user-profile { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .controls { flex-direction: column; align-items: flex-start; width: 100%; gap: 10px; }
+            .controls .muted { margin-bottom: 5px; }
+            .search-input { width: 100%; min-width: unset; }
+            .sort-select, #statusFilterDropdown, #eventFilterDropdown { width: 100%; }
+            
+            /* Mobile Nav Links */
+            .sidebar nav ul { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 20px; }
+            .sidebar nav ul li a { padding: 10px 15px; border-left: none; border-bottom: 3px solid transparent; }
+            .sidebar nav ul li a.active { border-bottom-color: var(--accent-orange); border-left-color: transparent; }
+            .data-table th, .data-table td { padding: 8px 10px; }
+            .quick-stats-grid { grid-template-columns: 1fr 1fr; } 
+            .logo { margin-bottom: 20px; }
+            
+            /* Mass Action buttons take full width on mobile for touchability */
+            .mass-actions-section .action-btn-table {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+        .muted { color: var(--text-light); opacity: 0.85; font-size: 0.95rem; }
+        .controls .small { font-size: 0.9rem; color: var(--text-light); opacity: 0.9; }
+    </style>
+</head>
+<body>
+    <div id="assignModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" id="closeAssignModalBtn">&times;</span>
+            <h2 id="assignModalTitle"><i class="fas fa-user-check"></i> Assign Judges</h2>
+            <form id="assignJudgeForm">
+                <input type="hidden" id="modalSubmissionId">
+                <p style="color: var(--text-light); margin-bottom: 15px;">Submission: <strong id="modalSubmissionName"></strong></p>
+
+                <div class="form-group">
+                    <label for="judgeSelect">Assign/Reassign Judges (Max: <span id="maxJudgeCount">3</span>)</label>
+                    <select id="judgeSelect" multiple required size="6" style="height: 160px; width: 100%;">
+                    </select>
+                </div>
+                <p id="currentAssignments" style="color: var(--accent-orange); font-size: 0.9em;"></p>
+                <button type="submit" class="btn-modal-save"><i class="fas fa-save"></i> Update Assignments</button>
+            </form>
+        </div>
+    </div>
+    
+    <div id="massStatusModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" id="closeMassStatusModalBtn">&times;</span>
+            <h2><i class="fas fa-tasks"></i> Mass Status Change</h2>
+            <form id="massStatusForm">
+                <p style="color: var(--text-light); margin-bottom: 15px;">Select a new status for **all** currently filtered submissions.</p>
+
+                <div class="form-group">
+                    <label for="newStatusSelect">New Status</label>
+                    <select id="newStatusSelect" style="padding: 10px; width: 100%; background: var(--primary-bg-input); border: 1px solid var(--border-color); color: var(--text-light); border-radius: 4px;" required>
+                        <option value="">-- Select Status --</option>
+                        <option value="Submitted">Submitted (Initial)</option>
+                        <option value="Assigned">Assigned (Manual)</option>
+                        <option value="Evaluated">Evaluated (Force Complete)</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-modal-save" style="background-color: var(--accent-blue);"><i class="fas fa-exchange-alt"></i> Apply Status to Filtered Submissions</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="dashboard-container">
+       <aside class="sidebar">
+            <h2 class="logo"><i class="fas fa-microchip"></i> EventSphere Admin</h2>
+            <nav>
+                <ul>
+                    <li><a href="overview.html" data-section="overview"><i class="fas fa-columns"></i> Overview</a></li>
+                    <li><a href="manage_event.html" data-section="manage-events"><i class="fas fa-calendar-alt"></i> Manage Events</a></li>
+                    <li><a href="participants.html" data-section="participants"><i class="fas fa-users-cog"></i> Participants</a></li>
+                    <li><a href="manage_judges.html" data-section="judges"><i class="fas fa-user-tie"></i> Manage Judges</a></li>
+                    <li class="active"><a href="submissions.html" data-section="submissions"><i class="fas fa-file-code"></i> <strong>Submissions</strong></a></li>
+                    <li><a href="analytics.html" data-section="analytics"><i class="fas fa-chart-line"></i> Analytics</a></li>
+                    <li><a href="settings.html" data-section="settings"><i class="fas fa-cogs"></i> Settings</a></li>
+                    <li class="logout-link"><a href="login.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="dashboard-header">
+                <h1>Manage Submissions</h1>
+                <div class="user-profile">
+                    <div class="controls">
+                        <span class="muted">Filters:</span>
+                        <select class="action-btn sort-select" id="statusFilterDropdown">
+                            <option value="all">All Statuses</option>
+                            <option value="Evaluated">Evaluated</option>
+                            <option value="In Review">In Review</option>
+                            <option value="Assigned">Assigned</option>
+                            <option value="Submitted">Submitted</option>
+                        </select>
+                        
+                        <select class="action-btn sort-select" id="eventFilterDropdown">
+                            <option value="all">All Events</option>
+                        </select>
+
+                        <div class="search-input" title="Search by participant, project, or event">
+                            <i class="fas fa-search" style="opacity:0.8"></i>
+                            <input id="globalSearchInput" placeholder="Search participant / project / event" />
+                            <button id="clearSearchBtn" style="background:none;border:none;color:var(--text-light);cursor:pointer;"><i class="fas fa-times"></i></button>
+                        </div>
+
+                        <select id="sortSelect" class="sort-select">
+                            <option value="newest">Newest</option>
+                            <option value="oldest">Oldest</option>
+                            <option value="event-az">Event A→Z</option>
+                            <option value="status">Status</option>
+                        </select>
+                    </div>
+                </div>
+            </header>
+
+            <section class="quick-stats-grid">
+                <div class="stat-card">
+                    <div class="icon-wrapper" style="color: var(--accent-blue); background-color: rgba(88, 166, 255, 0.15);">
+                        <i class="fas fa-clipboard-check"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Total Submissions</h3>
+                        <p class="stat-value" id="totalSubmissions">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon-wrapper" style="color: var(--accent-green); background-color: rgba(63, 185, 80, 0.15);">
+                        <i class="fas fa-check-double"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Fully Evaluated</h3>
+                        <p class="stat-value" id="fullyEvaluated">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon-wrapper" style="color: var(--accent-orange); background-color: rgba(248, 140, 82, 0.15);">
+                        <i class="fas fa-hourglass-half"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>In Review / Pending</h3>
+                        <p class="stat-value" id="pendingAssignment">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon-wrapper" style="color: var(--accent-red); background-color: rgba(233, 78, 92, 0.15);">
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Avg. Score (Global)</h3>
+                        <p class="stat-value" id="avgScore">0.0%</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section submission-list-section">
+                <h2><i class="fas fa-table"></i> Submission Tracking</h2>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Submission ID</th>
+                                <th>Event / Project Name</th>
+                                <th>Participant Name</th>
+                                <th>Status</th>
+                                <th>Evaluation Progress</th>
+                                <th>Assigned Judge(s)</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="submissionTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="dashboard-section mass-actions-section">
+                <h2><i class="fas fa-layer-group"></i> Mass Actions</h2>
+                <p style="color: var(--text-light); margin-bottom: 20px;">Perform operations on submissions.</p>
+                <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                    <button class="action-btn-table" style="background-color: var(--accent-blue);" id="autoAssignBtn"><i class="fas fa-sync-alt"></i> Auto-Assign Submissions</button>
+                    <button class="action-btn-table" style="background-color: var(--accent-purple);" id="massStatusChangeBtn"><i class="fas fa-exchange-alt"></i> Mass Status Change</button>
+                    <button class="action-btn-table" style="background-color: var(--accent-orange);" id="emailPendingBtn"><i class="fas fa-envelope"></i> Email Pending Judges</button>
+                    <button class="action-btn-table" style="background-color: var(--accent-green);" id="downloadAllFilesBtn"><i class="fas fa-download"></i> Download All Files</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // --- LOCAL STORAGE KEYS (Consistent across all pages) ---
+        const SUBMISSIONS_KEY = 'adminSubmissionsData';
+        const EVENTS_KEY = 'adminEventsData';
+        const JUDGES_KEY = 'adminJudgesData';
+
+        // Data holders
+        let submissionsData = [];
+        let eventsList = [];
+        let allJudges = [];
+
+        // --- DOM Elements ---
+        const assignModal = document.getElementById('assignModal');
+        const closeAssignModalBtn = document.getElementById('closeAssignModalBtn');
+        const assignJudgeForm = document.getElementById('assignJudgeForm');
+        const judgeSelect = document.getElementById('judgeSelect');
+        
+        const massStatusModal = document.getElementById('massStatusModal'); 
+        const closeMassStatusModalBtn = document.getElementById('closeMassStatusModalBtn'); 
+        const massStatusForm = document.getElementById('massStatusForm'); 
+        
+        const eventFilterDropdown = document.getElementById('eventFilterDropdown');
+        const statusFilterDropdown = document.getElementById('statusFilterDropdown'); 
+        const globalSearchInput = document.getElementById('globalSearchInput');
+        const clearSearchBtn = document.getElementById('clearSearchBtn');
+        const sortSelect = document.getElementById('sortSelect');
+
+        // --- Util and Data Initialization (Existing functions retained) ---
+        function generateId() {
+            const num = Math.floor(Math.random() * 900) + 100;
+            const ts = Date.now().toString().slice(-5);
+            return 'SUB' + ts + num;
+        }
+
+        function loadData(key, defaultData = []) {
+            const storedData = localStorage.getItem(key);
+            if (storedData) {
+                try { return JSON.parse(storedData); } catch (e) { return defaultData; }
+            }
+            if (defaultData.length > 0) {
+                localStorage.setItem(key, JSON.stringify(defaultData));
+            }
+            return defaultData;
+        }
+        function saveData(key, data) {
+            localStorage.setItem(key, JSON.stringify(data));
+        }
+
+        function initializeJudges() {
+            allJudges = loadData(JUDGES_KEY, [
+                { id: 'J001', name: "Neha Sharma", email: "neha.s@example.com", assignedEvent: "AI for Social Good"},
+                { id: 'J002', name: "Ravi Kumar", email: "ravi.k@example.com", assignedEvent: "Web Dev Innovation Sprint"},
+                { id: 'J003', name: "Alia Khan", email: "alia.k@example.com", assignedEvent: "Design Challenge Live"},
+                { id: 'J004', name: "Vivek Menon", email: "vivek.m@example.com", assignedEvent: "AI for Social Good"},
+                { id: 'J005', name: "Priya Singh", email: "priya.s@example.com", assignedEvent: "AI for Social Good"},
+                { id: 'J006', name: "Suresh Rao", email: "suresh.r@example.com", assignedEvent: "Global"},
+            ]);
+        }
+
+        function initializeEvents() {
+            eventsList = loadData(EVENTS_KEY, [
+                { name: "Web Dev Innovation Sprint" },
+                { name: "AI for Social Good" },
+                { name: "Design Challenge Live" },
+                { name: "Unstop Hackathon" },
+                { name: "Hackathon" },
+                { name: "Upcoming Conference" }
+            ]).map(e => e.name);
+        }
+
+        function initializeSubmissions() {
+            const stored = localStorage.getItem(SUBMISSIONS_KEY);
+            if (!stored || JSON.parse(stored).length === 0) {
+                const now = new Date();
+                const defaultSubmissions = [
+                    { id: generateId(), project: "EventSphere v2", event: "Web Dev Innovation Sprint", participant: "Priya Sharma", judges: ["Ravi Kumar"], scores: { "Ravi Kumar": 85 }, maxJudges: 1, createdAt: new Date(now.getTime() - 1000 * 60 * 60 * 24 * 10).toISOString() },
+                    { id: generateId(), project: "Finance Tracker", event: "Web Dev Innovation Sprint", participant: "Sneha Reddy", judges: [], scores: {}, maxJudges: 2, createdAt: new Date(now.getTime() - 1000 * 60 * 60 * 24 * 8).toISOString() },
+                    { id: generateId(), project: "Smart Traffic AI", event: "AI for Social Good", participant: "Rohit Singh", judges: ["Neha Sharma", "Vivek Menon", "Priya Singh"], scores: { "Neha Sharma": 70, "Vivek Menon": 80 }, maxJudges: 3, createdAt: new Date(now.getTime() - 1000 * 60 * 60 * 24 * 20).toISOString() },
+                    { id: generateId(), project: "Eco-Friendly UI", event: "Design Challenge Live", participant: "Alia K.", judges: ["Alia Khan"], scores: { "Alia Khan": 92 }, maxJudges: 1, createdAt: new Date(now.getTime() - 1000 * 60 * 60 * 24 * 18).toISOString() },
+                    { id: generateId(), project: "E-commerce Backend", event: "Unstop Hackathon", participant: "Rajesh T.", judges: ["Ravi Kumar", "Neha Sharma"], scores: { "Ravi Kumar": 60 }, maxJudges: 2, createdAt: new Date(now.getTime() - 1000 * 60 * 60 * 24 * 2).toISOString() },
+                    { id: generateId(), project: "Cloud Security Tool", event: "Hackathon", participant: "Gita M.", judges: [], scores: {}, maxJudges: 1, createdAt: new Date(now.getTime() - 1000 * 60 * 60 * 24 * 3).toISOString() },
+                    { id: generateId(), project: "Future App Concept", event: "Upcoming Conference", participant: "Kamal S.", judges: [], scores: {}, maxJudges: 1, createdAt: new Date(now.getTime() - 1000 * 60 * 60 * 24 * 1).toISOString() },
+                ];
+                submissionsData = defaultSubmissions;
+                saveData(SUBMISSIONS_KEY, submissionsData);
+            } else {
+                submissionsData = JSON.parse(stored);
+            }
+        }
+
+        // --- Business logic: status & stats (Existing functions retained) ---
+        function getStatusForSubmission(sub) {
+            const scoresCount = Object.keys(sub.scores || {}).length;
+            const maxJ = sub.maxJudges || 1;
+            const assignedCount = (sub.judges || []).length;
+
+            if (scoresCount >= maxJ && maxJ > 0) return 'Evaluated';
+            if (scoresCount > 0 && scoresCount < maxJ) return 'In Review';
+            if (assignedCount > 0 && scoresCount === 0) return 'Assigned';
+            
+            return 'Submitted';
+        }
+
+        function calculateSubmissionStats() {
+            const stats = {
+                total: submissionsData.length,
+                evaluated: 0,
+                pendingAssignment: 0,
+                totalScoreSum: 0,
+                totalEvaluatedSubmissions: 0,
+                avgScore: 0,
+            };
+
+            submissionsData.forEach(sub => {
+                const status = getStatusForSubmission(sub);
+                
+                if (status === 'Evaluated') {
+                    stats.evaluated++;
+                    const scores = Object.values(sub.scores || {});
+                    if (scores.length > 0) {
+                        const avgSub = scores.reduce((a, b) => a + b, 0) / scores.length;
+                        stats.totalScoreSum += avgSub;
+                        stats.totalEvaluatedSubmissions++;
+                    }
+                } else {
+                    stats.pendingAssignment++;
+                }
+            });
+
+            stats.avgScore = stats.totalEvaluatedSubmissions > 0 ? (stats.totalScoreSum / stats.totalEvaluatedSubmissions).toFixed(1) : '0.0';
+            return stats;
+        }
+
+        // --- Rendering helpers (Existing functions retained) ---
+        function renderQuickStats() {
+            const stats = calculateSubmissionStats();
+            document.getElementById('totalSubmissions').textContent = stats.total;
+            document.getElementById('fullyEvaluated').textContent = stats.evaluated;
+            document.getElementById('pendingAssignment').textContent = stats.pendingAssignment;
+            document.getElementById('avgScore').textContent = `${stats.avgScore}%`;
+        }
+
+        function populateEventFilter() {
+            const dropdown = eventFilterDropdown;
+            dropdown.innerHTML = '<option value="all">All Events</option>';
+            const uniqueEvents = [...new Set([...eventsList, ...submissionsData.map(s => s.event)])].filter(e => e);
+            uniqueEvents.sort().forEach(event => {
+                const option = document.createElement('option');
+                option.value = event;
+                option.textContent = event;
+                dropdown.appendChild(option);
+            });
+        }
+
+        function formatDateShort(iso) {
+            try {
+                const d = new Date(iso);
+                return d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+            } catch (e) { return iso; }
+        }
+
+        function renderSubmissionRow(sub) {
+            const tableBody = document.getElementById('submissionTableBody');
+
+            const scoresCount = Object.keys(sub.scores || {}).length;
+            const maxJudges = sub.maxJudges || 1;
+            const progressPercentage = maxJudges > 0 ? Math.round((scoresCount / maxJudges) * 100) : 0;
+            const assignedJudgesNames = sub.judges.length > 0 ? sub.judges.join(', ') : 'Unassigned';
+
+            const status = getStatusForSubmission(sub);
+            let statusClass = '';
+            if (status === 'Evaluated') statusClass = 'evaluated';
+            else if (status === 'In Review') statusClass = 'in-review';
+            else if (status === 'Assigned') statusClass = 'assigned';
+            else statusClass = 'submitted';
+
+            const progressTextClass = status === 'Evaluated' ? 'evaluated-text' : (status === 'In Review' ? 'in-review-text' : '');
+
+            const newRow = tableBody.insertRow();
+            newRow.dataset.submissionId = sub.id; 
+            newRow.innerHTML = `
+                <td>#${sub.id}<div style="font-size:0.7rem;color:var(--text-light);opacity:0.7;margin-top:6px;">${formatDateShort(sub.createdAt)}</div></td>
+                <td>${sub.event} <div style="font-weight:700;margin-top:6px;">${sub.project}</div></td>
+                <td>${sub.participant}</td>
+                <td><span class="status-badge ${statusClass}">${status}</span></td>
+                <td>
+                    <div class="progress-bar-container"><div class="progress-fill" style="width: ${progressPercentage}%;"></div></div>
+                    <p class="progress-text ${progressTextClass}">${progressPercentage}% (${scoresCount}/${maxJudges})</p>
+                </td>
+                <td>${assignedJudgesNames}</td>
+                <td>
+                    <button class="action-btn-table view-code-btn" data-action="view" data-submission-id="${sub.id}"><i class="fas fa-eye"></i> View</button>
+                    <button class="action-btn-table assign-btn" data-action="assign" data-submission-id="${sub.id}"><i class="fas fa-user-check"></i> Assign</button>
+                </td>
+            `;
+        }
+
+        // --- Core Rendering and Filtering Logic (Updated to include Status Filter) ---
+        function applyFiltersAndRender() {
+            const eventFilter = eventFilterDropdown.value;
+            const statusFilter = statusFilterDropdown.value; 
+            const searchQuery = globalSearchInput.value.trim().toLowerCase();
+            const sortBy = sortSelect.value;
+
+            let filtered = submissionsData.slice();
+
+            // 1. Filter by Event
+            if (eventFilter !== 'all') {
+                filtered = filtered.filter(s => s.event === eventFilter);
+            }
+            
+            // 2. Filter by Status
+            if (statusFilter !== 'all') {
+                filtered = filtered.filter(s => getStatusForSubmission(s) === statusFilter);
+            }
+            
+            // 3. Filter by Search Query
+            if (searchQuery !== '') {
+                filtered = filtered.filter(s => {
+                    const joined = `${s.participant} ${s.project} ${s.event}`.toLowerCase();
+                    return joined.includes(searchQuery);
+                });
+            }
+
+            // 4. Sort
+            filtered.sort((a, b) => {
+                if (sortBy === 'newest') return new Date(b.createdAt) - new Date(a.createdAt);
+                if (sortBy === 'oldest') return new Date(a.createdAt) - new Date(b.createdAt);
+                if (sortBy === 'event-az') return a.event.localeCompare(b.event);
+                if (sortBy === 'status') {
+                    const statusOrder = { 'Evaluated': 1, 'In Review': 2, 'Assigned': 3, 'Submitted': 4 };
+                    return statusOrder[getStatusForSubmission(a)] - statusOrder[getStatusForSubmission(b)];
+                }
+                return 0;
+            });
+            
+            // 5. Render
+            document.getElementById('submissionTableBody').innerHTML = '';
+            filtered.forEach(renderSubmissionRow);
+            
+            // Store the currently visible list for Mass Actions
+            window.currentFilteredSubmissions = filtered; 
+            
+            attachTableEventListeners(); 
+        }
+
+        // --- Judge Assignment Modal Handlers (Existing functions retained) ---
+        function openAssignModal(submissionId) {
+            const sub = submissionsData.find(s => s.id === submissionId);
+            if (!sub) return;
+
+            document.getElementById('modalSubmissionId').value = sub.id;
+            document.getElementById('modalSubmissionName').textContent = `${sub.project} (${sub.participant})`;
+            document.getElementById('maxJudgeCount').textContent = sub.maxJudges || 1;
+
+            judgeSelect.innerHTML = '';
+            allJudges.forEach(judge => {
+                const option = document.createElement('option');
+                option.value = judge.name;
+                option.textContent = judge.name;
+                
+                if (sub.judges.includes(judge.name)) {
+                    option.selected = true;
+                }
+                judgeSelect.appendChild(option);
+            });
+            
+            const currentAssignmentsElement = document.getElementById('currentAssignments');
+            const scoresCount = Object.keys(sub.scores || {}).length;
+            
+            let assignmentsText = `Current Judges: ${sub.judges.length > 0 ? sub.judges.join(', ') : 'None'}.`;
+            if (scoresCount > 0) {
+                assignmentsText += ` ${scoresCount} evaluation(s) already submitted. Be careful when reassigning!`;
+            }
+            currentAssignmentsElement.textContent = assignmentsText;
+
+            assignModal.style.display = 'block';
+        }
+
+        function closeAssignModal() {
+            assignModal.style.display = 'none';
+        }
+
+        function handleAssignmentSubmit(e) {
+            e.preventDefault();
+            const subId = document.getElementById('modalSubmissionId').value;
+            const selectedJudges = Array.from(judgeSelect.selectedOptions).map(option => option.value);
+
+            const submissionIndex = submissionsData.findIndex(s => s.id === subId);
+
+            if (submissionIndex !== -1) {
+                const sub = submissionsData[submissionIndex];
+                
+                if (selectedJudges.length > sub.maxJudges) {
+                    alert(`Error: You can only assign a maximum of ${sub.maxJudges} judges for this submission.`);
+                    return;
+                }
+                
+                sub.judges = selectedJudges;
+                
+                const updatedScores = {};
+                for (const [judgeName, score] of Object.entries(sub.scores || {})) {
+                    if (selectedJudges.includes(judgeName)) {
+                        updatedScores[judgeName] = score; 
+                    }
+                }
+                sub.scores = updatedScores; 
+
+                saveData(SUBMISSIONS_KEY, submissionsData);
+                alert(`Judges successfully assigned to ${sub.project}!`);
+                closeAssignModal();
+                applyFiltersAndRender();
+                renderQuickStats();
+            } else {
+                alert('Submission not found!');
+            }
+        }
+
+        // --- NEW: Mass Action Handlers ---
+
+        function openMassStatusModal() {
+             massStatusModal.style.display = 'block';
+        }
+
+        function closeMassStatusModal() {
+            massStatusModal.style.display = 'none';
+        }
+
+        function handleMassStatusSubmit(e) {
+            e.preventDefault();
+            const newStatus = document.getElementById('newStatusSelect').value;
+            const filteredSubs = window.currentFilteredSubmissions || [];
+            
+            if (!newStatus || filteredSubs.length === 0) {
+                alert('Please select a status and ensure there are submissions filtered to apply the change.');
+                return;
+            }
+
+            if (!confirm(`Are you sure you want to change the status of ${filteredSubs.length} submission(s) to "${newStatus}"?`)) {
+                return;
+            }
+
+            let changes = 0;
+            filteredSubs.forEach(filteredSub => {
+                const originalSub = submissionsData.find(s => s.id === filteredSub.id);
+                if (originalSub) {
+                    
+                    if (newStatus === 'Submitted') {
+                        originalSub.judges = [];
+                        originalSub.scores = {};
+                        changes++;
+                    } else if (newStatus === 'Assigned') {
+                        if (originalSub.judges.length === 0) {
+                            const judgeName = allJudges[0].name; 
+                            originalSub.judges = [judgeName]; 
+                            originalSub.maxJudges = originalSub.maxJudges || 1;
+                            changes++;
+                        }
+                    } else if (newStatus === 'Evaluated') {
+                        originalSub.maxJudges = 1;
+                        originalSub.judges = originalSub.judges.length > 0 ? originalSub.judges : [allJudges[0].name];
+                        const judgeName = originalSub.judges[0];
+                        originalSub.scores[judgeName] = originalSub.scores[judgeName] || 90; 
+                        changes++;
+                    }
+                }
+            });
+
+            saveData(SUBMISSIONS_KEY, submissionsData);
+            alert(`Successfully updated ${changes} submission(s) to reflect the new status: ${newStatus}.`);
+            closeMassStatusModal();
+            applyFiltersAndRender();
+            renderQuickStats();
+        }
+
+        function autoAssignDemo() {
+            let changes = 0;
+            const unassignedSubs = submissionsData.filter(s => s.judges.length === 0 && getStatusForSubmission(s) === 'Submitted');
+            const availableJudges = allJudges.map(j => j.name);
+            let judgeIndex = 0;
+
+            if (!confirm(`Are you sure you want to auto-assign judges to all ${unassignedSubs.length} unassigned submissions?`)) {
+                 return;
+            }
+
+            unassignedSubs.forEach(sub => {
+                if (availableJudges.length > 0) {
+                    const judgeToAssign = availableJudges[judgeIndex % availableJudges.length]; 
+                    sub.judges = [judgeToAssign];
+                    sub.maxJudges = sub.maxJudges || 1; 
+                    changes++;
+                    judgeIndex++; 
+                }
+            });
+
+            if (changes > 0) {
+                saveData(SUBMISSIONS_KEY, submissionsData);
+                applyFiltersAndRender();
+                renderQuickStats();
+                alert(`${changes} submission(s) have been automatically assigned a judge. Status updated to 'Assigned'.`);
+            } else {
+                alert('No unassigned submissions found, or no available judges.');
+            }
+        }
+
+        function downloadAllFilesDemo() {
+            alert('Initiating bulk download for all submission files... (Placeholder Action)');
+        }
+        
+        function emailPendingJudgesDemo() {
+            const pendingSubs = submissionsData.filter(s => getStatusForSubmission(s) === 'In Review');
+            if(pendingSubs.length === 0) {
+                alert('No submissions are currently "In Review" (partially scored) to send reminders for.');
+                return;
+            }
+            alert(`Sending reminder emails to judges responsible for the ${pendingSubs.length} "In Review" submissions... (Placeholder Action)`);
+        }
+
+        // --- Event Listeners Setup (Initialization) ---
+        function attachTableEventListeners() {
+            const tableBody = document.getElementById('submissionTableBody');
+            if (tableBody) {
+                 tableBody.onclick = (e) => {
+                    const btn = e.target.closest('.action-btn-table');
+                    if (!btn) return;
+                    
+                    const subId = btn.dataset.submissionId;
+                    const action = btn.dataset.action;
+                    
+                    if (action === 'assign') {
+                        openAssignModal(subId);
+                    } else if (action === 'view') {
+                        viewSubmissionDetails(subId);
+                    }
+                };
+            }
+        }
+        
+        function viewSubmissionDetails(submissionId) {
+            const sub = submissionsData.find(s => s.id === submissionId);
+            if (!sub) return;
+            
+            const scoreDetails = Object.entries(sub.scores).map(([judge, score]) => `${judge}: ${score}%`).join(' | ') || 'None';
+            
+            alert(
+                `Submission Details for ${sub.project}:\n` +
+                `Event: ${sub.event}\n` +
+                `Participant: ${sub.participant}\n` +
+                `Current Status: ${getStatusForSubmission(sub)}\n` +
+                `Max Judges: ${sub.maxJudges}\n` +
+                `Assigned Judges: ${sub.judges.join(', ') || 'None'}\n` +
+                `Scores: ${scoreDetails}\n\n` +
+                `[Placeholder for opening code/document review page]`
+            );
+        }
+
+        function initEventListeners() {
+            // Modal controls (Assignment)
+            closeAssignModalBtn.onclick = closeAssignModal;
+            assignJudgeForm.onsubmit = handleAssignmentSubmit;
+            
+            // Modal controls (Mass Status)
+            closeMassStatusModalBtn.onclick = closeMassStatusModal;
+            massStatusForm.onsubmit = handleMassStatusSubmit;
+
+            // Mass Action Buttons
+            document.getElementById('autoAssignBtn').onclick = autoAssignDemo;
+            document.getElementById('massStatusChangeBtn').onclick = openMassStatusModal;
+            document.getElementById('downloadAllFilesBtn').onclick = downloadAllFilesDemo;
+            document.getElementById('emailPendingBtn').onclick = emailPendingJudgesDemo;
+
+            // Search/Filter/Sort controls
+            eventFilterDropdown.onchange = applyFiltersAndRender;
+            statusFilterDropdown.onchange = applyFiltersAndRender; 
+            sortSelect.onchange = applyFiltersAndRender;
+            
+            globalSearchInput.oninput = applyFiltersAndRender;
+            clearSearchBtn.onclick = () => {
+                globalSearchInput.value = '';
+                applyFiltersAndRender();
+            };
+            
+            window.onclick = (event) => {
+                if (event.target === assignModal) {
+                    closeAssignModal();
+                }
+                if (event.target === massStatusModal) { 
+                    closeMassStatusModal();
+                }
+            };
+
+            attachTableEventListeners();
+        }
+
+        // --- Master Initialization Function ---
+        function initDashboard() {
+            initializeJudges();
+            initializeEvents();
+            initializeSubmissions();
+            populateEventFilter();
+            renderQuickStats();
+            applyFiltersAndRender(); 
+            initEventListeners();
+        }
+
+        // Run the master function when the DOM is ready
+        document.addEventListener('DOMContentLoaded', initDashboard);
+
+    </script>
+</body>
+</html>
