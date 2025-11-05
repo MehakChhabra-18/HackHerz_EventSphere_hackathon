@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Event Sphere - Events</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="event.css" />
+</head>
+<body>
+  <!-- Navigation -->
+  <header>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="home.html">HOME</a></li>
+        <li><a href="#" class="active">EVENTS</a></li>
+        <li><a href="club.html">CLUBS</a></li>
+        <li><a href="about.html">ABOUT</a></li>
+      </ul>
+      <button id="login-btn" class="login-btn">Login</button>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="dis">
+    <h1>DISCOVER YOUR POTENTIAL</h1>
+    <p>
+      Discovering your potential begins with believing in your ability to grow beyond limitations.
+    </p>
+    <button type="button" class="scroll-btn">Explore Now!</button>
+  </section>
+
+  <!-- Events Section -->
+  <section class="cards-section" id="events">
+    <div class="card-container">
+      <div class="card">
+        <img src="img/person-working-html-computer.jpg" alt="Hackathon" />
+        <div class="card-content">
+          <h2>HACKFORGE</h2>
+          <p>Discover your potential by turning ideas into reality. Code, create, and compete to shape the future.</p>
+          <button type="button" class="btn">Join Now</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-container">
+      <div class="card">
+        <img src="img/corporate-businessman-giving-presentation-large-audience.jpg" alt="Seminar" />
+        <div class="card-content">
+          <h2>INSPIRE TALKS</h2>
+          <p>Unlock your potential with powerful seminars designed to motivate, educate, and inspire.</p>
+          <button type="button" class="btn">Join Now</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-container">
+      <div class="card">
+        <img src="img/excited-audience-watching-confetti-fireworks-having-fun-music-festival-night-copy-space.jpg" alt="DJ Night" />
+        <div class="card-content">
+          <h2>NIGHTPULSE</h2>
+          <p>Feel the energy come alive with beats, lights, and endless celebration.</p>
+          <button type="button" class="btn">Join Now</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-container">
+      <div class="card">
+        <img src="img/35105922_8248639.jpg" alt="Comedy Show" />
+        <div class="card-content">
+          <h2>JOKE NIGHTS</h2>
+          <p>Discover joy in laughter! Join us for hilarious moments and non-stop entertainment.</p>
+          <button type="button" class="btn">Join Now</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Popup -->
+  <div id="popup" class="popup">
+    <div class="popup-box">
+      <span class="close-btn">&times;</span>
+
+      <div class="popup-left">
+        <img id="popup-img" src="" alt="Event Image" />
+      </div>
+
+      <div class="popup-right">
+        <h2 id="popup-title"></h2>
+        <p id="popup-description"></p>
+        <p id="popup-eventname" style="font-size: 1.2rem; font-weight: 700; color: #ffcc00; margin-bottom: 4px;"></p>
+        <p style="margin-bottom: 2px;"><strong>Date:</strong> <span id="popup-date"></span></p>
+        <p style="margin-top: 2px;"><strong>Venue:</strong> <span id="popup-venue"></span></p>
+
+        
+        <!-- Registration Form -->
+        <form id="eventRegisterForm">
+          <div class="input-group">
+            <label>First Name *</label>
+            <input type="text" id="firstName" placeholder="Enter first name" required />
+          </div>
+          <div class="input-group">
+            <label>Last Name</label>
+            <input type="text" id="lastName" placeholder="Enter last name"  />
+          </div>
+          <div class="input-group">
+            <label>Gender *</label>
+            <select id="gender" required>
+              <option value="" disabled selected>Select gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Email ID *</label>
+            <input type="email" id="regEmail" placeholder="Enter email" required />
+          </div>
+          <div class="input-group">
+            <label>Phone Number *</label>
+            <input type="tel" id="phone" placeholder="Enter phone number" pattern="[0-9]{10}" required />
+          </div>
+          <div class="input-group">
+            <label>Institution Name *</label>
+            <input type="text" id="institution" placeholder="Enter institution" required />
+          </div>
+
+          <button type="submit" id="registerBtn">Submit Registration</button>
+          <p id="registerMsg" style="margin-top:10px; font-weight:500; color:white;"></p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="event.js"></script>
+</body>
+</html>
